@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_CLAS" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <VSEOCLASS>
+    <CLSNAME>ZCL_IO_MSDOS</CLSNAME>
+    <LANGU>E</LANGU>
+    <STATE>1</STATE>
+    <CLSCCINCL>X</CLSCCINCL>
+    <FIXPT>X</FIXPT>
+    <UNICODE>X</UNICODE>
+   </VSEOCLASS>
+   <DESCRIPTIONS>
+    <SEOCOMPOTX>
+     <CLSNAME>ZCL_IO_MSDOS</CLSNAME>
+     <CMPNAME>FROM_DATE</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>FROM_DATE</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZCL_IO_MSDOS</CLSNAME>
+     <CMPNAME>FROM_TIME</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>FROM_TIME</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZCL_IO_MSDOS</CLSNAME>
+     <CMPNAME>TO_DATE</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>TO_DATE</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZCL_IO_MSDOS</CLSNAME>
+     <CMPNAME>TO_TIME</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>TO_TIME</DESCRIPT>
+    </SEOCOMPOTX>
+   </DESCRIPTIONS>
+  </asx:values>
+ </asx:abap>
+</abapGit>

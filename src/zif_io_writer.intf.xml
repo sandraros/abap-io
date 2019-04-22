@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_INTF" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <VSEOINTERF>
+    <CLSNAME>ZIF_IO_WRITER</CLSNAME>
+    <LANGU>E</LANGU>
+    <EXPOSURE>2</EXPOSURE>
+    <STATE>1</STATE>
+    <UNICODE>X</UNICODE>
+   </VSEOINTERF>
+   <DESCRIPTIONS>
+    <SEOCOMPOTX>
+     <CLSNAME>ZIF_IO_WRITER</CLSNAME>
+     <CMPNAME>FLUSH</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>FLUSH</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZIF_IO_WRITER</CLSNAME>
+     <CMPNAME>IS_X_WRITER</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>IS_X_WRITER</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZIF_IO_WRITER</CLSNAME>
+     <CMPNAME>WRITE</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>WRITE</DESCRIPT>
+    </SEOCOMPOTX>
+   </DESCRIPTIONS>
+  </asx:values>
+ </asx:abap>
+</abapGit>
