@@ -5,6 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_IO_MEMORY_C_READER</CLSNAME>
     <LANGU>E</LANGU>
+    <DESCRIPT>Abstract data object reader</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

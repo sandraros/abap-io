@@ -1,23 +1,25 @@
-interface ZIF_IO_C_WRITER
-  public .
+"! <p class="shorttext synchronized" lang="en">Write characters</p>
+INTERFACE zif_io_c_writer
+  PUBLIC .
 
 
-  interfaces ZIF_IO_CLOSE_RESOURCE .
-  interfaces ZIF_IO_WRITER .
+  INTERFACES zif_io_close_resource .
+  INTERFACES zif_io_writer .
 
-  aliases CLOSE
-    for ZIF_IO_WRITER~CLOSE .
-  aliases FLUSH
-    for ZIF_IO_WRITER~FLUSH .
-  aliases IS_CLOSED
-    for ZIF_IO_WRITER~IS_CLOSED .
-  aliases IS_X_WRITER
-    for ZIF_IO_WRITER~IS_X_WRITER .
+  ALIASES close
+    FOR zif_io_writer~close .
+  ALIASES flush
+    FOR zif_io_writer~flush .
+  ALIASES is_closed
+    FOR zif_io_writer~is_closed .
+  ALIASES is_x_writer
+    FOR zif_io_writer~is_x_writer .
 
-  methods WRITE
-    importing
-      !DATA type STRING
-    raising
-      ZCX_IO_RESOURCE_ALREADY_CLOSED
-      ZCX_IO_STREAM_ERROR .
-endinterface.
+  METHODS write
+    IMPORTING
+      !data TYPE clike
+    RAISING
+      zcx_io_resource_already_closed
+      zcx_io_stream_error .
+
+ENDINTERFACE.

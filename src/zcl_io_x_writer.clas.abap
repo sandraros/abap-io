@@ -1,78 +1,79 @@
-class ZCL_IO_X_WRITER definition
-  public
-  create public .
+"! <p class="shorttext synchronized" lang="en">Byte writer</p>
+CLASS zcl_io_x_writer DEFINITION
+  PUBLIC
+  CREATE PUBLIC .
 
-public section.
+  PUBLIC SECTION.
 
-  interfaces ZIF_IO_CLOSE_RESOURCE
-      all methods final .
-  interfaces ZIF_IO_WRITER
-      all methods final .
-  interfaces ZIF_IO_X_WRITER
-      all methods final .
+    INTERFACES zif_io_close_resource
+      ALL METHODS FINAL .
+    INTERFACES zif_io_writer
+      ALL METHODS FINAL .
+    INTERFACES zif_io_x_writer
+      ALL METHODS FINAL .
 
-  aliases CLOSE
-    for ZIF_IO_CLOSE_RESOURCE~CLOSE .
-  aliases FLUSH
-    for ZIF_IO_WRITER~FLUSH .
-  aliases IS_CLOSED
-    for ZIF_IO_CLOSE_RESOURCE~IS_CLOSED .
-  aliases IS_X_WRITER
-    for ZIF_IO_WRITER~IS_X_WRITER .
-  aliases WRITE
-    for ZIF_IO_X_WRITER~WRITE .
+    ALIASES close
+      FOR zif_io_close_resource~close .
+    ALIASES flush
+      FOR zif_io_writer~flush .
+    ALIASES is_closed
+      FOR zif_io_close_resource~is_closed .
+    ALIASES is_x_writer
+      FOR zif_io_writer~is_x_writer .
+    ALIASES write
+      FOR zif_io_x_writer~write .
 
-  methods CONSTRUCTOR .
-protected section.
-private section.
+    METHODS constructor .
+  PROTECTED SECTION.
+  PRIVATE SECTION.
 ENDCLASS.
 
 
 
-CLASS ZCL_IO_X_WRITER IMPLEMENTATION.
+CLASS zcl_io_x_writer IMPLEMENTATION.
 
 
-  method CONSTRUCTOR.
+  METHOD constructor.
 
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method ZIF_IO_CLOSE_RESOURCE~CLOSE.
-  endmethod.
+  METHOD zif_io_close_resource~close.
+  ENDMETHOD.
 
 
-  method ZIF_IO_CLOSE_RESOURCE~IS_CLOSED.
-  endmethod.
+  METHOD zif_io_close_resource~is_closed.
+  ENDMETHOD.
 
 
-  method ZIF_IO_WRITER~FLUSH.
-  endmethod.
+  METHOD zif_io_writer~flush.
+  ENDMETHOD.
 
 
-  method ZIF_IO_WRITER~IS_X_WRITER.
-  endmethod.
+  METHOD zif_io_writer~is_x_writer.
+  ENDMETHOD.
 
 
-  method ZIF_IO_WRITER~WRITE.
+  METHOD zif_io_writer~write.
+    CALL METHOD me->('WRITE_INTERNAL') EXPORTING data = data.
+*    DATA type TYPE REF TO cl_abap_typedescr.
+*    DATA l_name TYPE string.
+*    type = cl_abap_typedescr=>describe_by_data( data ).
+*    IF type = cl_abap_elemdescr=>get_xstring( ).
+*      write( data ).
+*    ELSE.
+*      l_name = type->get_relative_name( ).
+*      RAISE EXCEPTION TYPE zcx_io_parameter_invalid_type
+*         EXPORTING
+*           textid = zcx_io_parameter_invalid_type=>zcx_io_parameter_invalid_type
+*           parameter = `DATA`
+*           type = l_name.
+*    ENDIF.
+  ENDMETHOD.
 
-    DATA type TYPE REF TO cl_abap_typedescr.
-    DATA l_name TYPE string.
-    type = cl_abap_typedescr=>describe_by_data( data ).
-    IF type = cl_abap_elemdescr=>get_xstring( ).
-      write( data ).
-    ELSE.
-      l_name = type->get_relative_name( ).
-      RAISE EXCEPTION TYPE zcx_io_parameter_invalid_type
-         EXPORTING
-           textid = zcx_io_parameter_invalid_type=>zcx_io_parameter_invalid_type
-           parameter = `DATA`
-           type = l_name.
-    ENDIF.
 
-  endmethod.
-
-
-  method ZIF_IO_X_WRITER~WRITE.
-  endmethod.
+  METHOD zif_io_x_writer~write.
+    CALL METHOD me->('WRITE_INTERNAL') EXPORTING data = data.
+  ENDMETHOD.
 ENDCLASS.

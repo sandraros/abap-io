@@ -1,4 +1,4 @@
-"! <p class="shorttext synchronized" lang="en">Z</p>
+"! <p class="shorttext synchronized" lang="en">Character reader</p>
 CLASS zcl_io_c_reader DEFINITION
   PUBLIC
   ABSTRACT
@@ -52,24 +52,40 @@ CLASS zcl_io_c_reader IMPLEMENTATION.
 
 
   METHOD constructor.
-
-
   ENDMETHOD.
 
 
   METHOD zif_io_close_resource~close.
+    IF closed = abap_true.
+      RAISE EXCEPTION TYPE zcx_io_close_resource_error.
+    ENDIF.
+    closed = abap_true.
   ENDMETHOD.
 
 
   METHOD zif_io_close_resource~is_closed.
+    closed = me->closed.
   ENDMETHOD.
 
 
   METHOD zif_io_c_reader~read.
+
+    IF data_available( ) = abap_false.
+      RAISE EXCEPTION TYPE zcx_io_stream_error." exporting textid = zcx_io_stream_error=>.
+    ENDIF.
+    CALL METHOD me->('READ_INTERNAL')
+      EXPORTING
+        length = length
+      RECEIVING
+        result = result.
+
   ENDMETHOD.
 
 
   METHOD zif_io_reader~data_available.
+    CALL METHOD me->('DATA_AVAILABLE_INTERNAL')
+      RECEIVING
+        available = available.
   ENDMETHOD.
 
 
@@ -93,10 +109,13 @@ CLASS zcl_io_c_reader IMPLEMENTATION.
 
 
   METHOD zif_io_reader~read.
-
-    zcl_io_stream_utilities=>check_data_type_is_string( read_data ).
-    read_data = read( length ).
-
+    CALL METHOD me->('READ_INTERNAL')
+      EXPORTING
+        length    = length
+      RECEIVING
+        read_data = read_data.
+*    zcl_io_stream_utilities=>check_data_type_is_string( read_data ).
+*    read_data = read( length ).
   ENDMETHOD.
 
 
@@ -121,5 +140,6 @@ CLASS zcl_io_c_reader IMPLEMENTATION.
 
 
   METHOD zif_io_reader~skip.
+    read( length ).
   ENDMETHOD.
 ENDCLASS.

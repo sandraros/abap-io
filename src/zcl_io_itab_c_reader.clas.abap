@@ -1,3 +1,4 @@
+"! <p class="shorttext synchronized" lang="en">Itab character reader</p>
 class ZCL_IO_ITAB_C_READER definition
   public
   inheriting from ZCL_IO_MEMORY_C_READER
@@ -16,18 +17,6 @@ public section.
     raising
       ZCX_IO_PARAMETER_INVALID_TYPE .
 
-  methods DELETE_MARK
-    redefinition .
-  methods IS_MARK_SUPPORTED
-    redefinition .
-  methods IS_RESET_SUPPORTED
-    redefinition .
-  methods RESET
-    redefinition .
-  methods RESET_TO_MARK
-    redefinition .
-  methods SET_MARK
-    redefinition .
 protected section.
 private section.
 
@@ -96,12 +85,6 @@ CLASS ZCL_IO_ITAB_C_READER IMPLEMENTATION.
   endmethod.
 
 
-  method DELETE_MARK.
-*CALL METHOD SUPER->DELETE_MARK
-*    .
-  endmethod.
-
-
   method FIND_FIRST.
 
     FIELD-SYMBOLS: <input> TYPE STANDARD TABLE,
@@ -121,20 +104,6 @@ CLASS ZCL_IO_ITAB_C_READER IMPLEMENTATION.
       m_line_index = m_line_index + 1.
     ENDDO.
 
-  endmethod.
-
-
-  method IS_MARK_SUPPORTED.
-*CALL METHOD SUPER->IS_MARK_SUPPORTED
-*    .
-  endmethod.
-
-
-  method IS_RESET_SUPPORTED.
-*CALL METHOD SUPER->IS_RESET_SUPPORTED
-*  RECEIVING
-*    RESULT =
-*    .
   endmethod.
 
 
@@ -188,27 +157,5 @@ CLASS ZCL_IO_ITAB_C_READER IMPLEMENTATION.
   endmethod.
 
 
-  method RESET.
-*CALL METHOD SUPER->RESET
-**  EXCEPTIONS
-**    zcx_io_resource_already_closed = 1
-**    zcx_io_stream_position_error   = 2
-**    others                         = 3
-*        .
-*IF SY-SUBRC <> 0.
-** Implement suitable error handling here
-*ENDIF.
-  endmethod.
 
-
-  method RESET_TO_MARK.
-*CALL METHOD SUPER->RESET_TO_MARK
-*    .
-  endmethod.
-
-
-  method SET_MARK.
-*CALL METHOD SUPER->SET_MARK
-*    .
-  endmethod.
 ENDCLASS.

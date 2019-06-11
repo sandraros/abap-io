@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_IO_MISC_XC_READER</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>Z</DESCRIPT>
+    <DESCRIPT>Mix of byte and character reader</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

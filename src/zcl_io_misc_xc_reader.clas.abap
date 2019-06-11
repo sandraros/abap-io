@@ -1,111 +1,120 @@
-class ZCL_IO_MISC_XC_READER definition
-  public
-  create public
+"! <p class="shorttext synchronized" lang="en">Mix of byte and character reader</p>
+CLASS zcl_io_misc_xc_reader DEFINITION
+  PUBLIC
+  CREATE PUBLIC
 
-  global friends ZCL_IO_X_READER .
+  GLOBAL FRIENDS zcl_io_x_reader .
 
-public section.
+  PUBLIC SECTION.
 
-  interfaces ZIF_IO_CLOSE_RESOURCE .
-  interfaces ZIF_IO_READER .
-  interfaces ZIF_IO_X_READER .
+    INTERFACES zif_io_close_resource .
+    INTERFACES zif_io_reader .
+    INTERFACES zif_io_x_reader .
 
-  aliases CLOSE
-    for ZIF_IO_X_READER~CLOSE .
-  aliases DATA_AVAILABLE
-    for ZIF_IO_X_READER~DATA_AVAILABLE .
-  aliases DELETE_MARK
-    for ZIF_IO_X_READER~DELETE_MARK .
-  aliases IS_CLOSED
-    for ZIF_IO_X_READER~IS_CLOSED .
-  aliases IS_MARK_SUPPORTED
-    for ZIF_IO_X_READER~IS_MARK_SUPPORTED .
-  aliases IS_RESET_SUPPORTED
-    for ZIF_IO_X_READER~IS_RESET_SUPPORTED .
-  aliases IS_X_READER
-    for ZIF_IO_X_READER~IS_X_READER .
-  aliases READ_BYTES
-    for ZIF_IO_X_READER~READ .
-  aliases RESET
-    for ZIF_IO_X_READER~RESET .
-  aliases RESET_TO_MARK
-    for ZIF_IO_X_READER~RESET_TO_MARK .
-  aliases SET_MARK
-    for ZIF_IO_X_READER~SET_MARK .
-  aliases SKIP
-    for ZIF_IO_X_READER~SKIP .
+    ALIASES close
+      FOR zif_io_x_reader~close .
+    ALIASES data_available
+      FOR zif_io_x_reader~data_available .
+    ALIASES delete_mark
+      FOR zif_io_x_reader~delete_mark .
+    ALIASES is_closed
+      FOR zif_io_x_reader~is_closed .
+    ALIASES is_mark_supported
+      FOR zif_io_x_reader~is_mark_supported .
+    ALIASES is_reset_supported
+      FOR zif_io_x_reader~is_reset_supported .
+    ALIASES is_x_reader
+      FOR zif_io_x_reader~is_x_reader .
+    ALIASES read_bytes
+      FOR zif_io_x_reader~read .
+    ALIASES reset
+      FOR zif_io_x_reader~reset .
+    ALIASES reset_to_mark
+      FOR zif_io_x_reader~reset_to_mark .
+    ALIASES set_mark
+      FOR zif_io_x_reader~set_mark .
+    ALIASES skip
+      FOR zif_io_x_reader~skip .
 
-  types TY_U_UTF_BOM type I .
+    TYPES ty_u_utf_bom TYPE i .
 
-  constants:
-    BEGIN OF utf_bom,
-                  not_found TYPE ty_u_utf_bom VALUE 1,
-                  utf_8     TYPE ty_u_utf_bom VALUE 2,
-                  utf_16_le TYPE ty_u_utf_bom VALUE 3,
-                  utf_16_be TYPE ty_u_utf_bom VALUE 4,
-                END OF utf_bom .
+    CONSTANTS:
+      BEGIN OF utf_bom,
+        not_found TYPE ty_u_utf_bom VALUE 1,
+        utf_8     TYPE ty_u_utf_bom VALUE 2,
+        utf_16_le TYPE ty_u_utf_bom VALUE 3,
+        utf_16_be TYPE ty_u_utf_bom VALUE 4,
+      END OF utf_bom .
 
-  events UTF_BOM_INFORMATION
-    exporting
-      value(UTF_BOM) type TY_U_UTF_BOM .
+    EVENTS utf_bom_information
+      EXPORTING
+        VALUE(utf_bom) TYPE ty_u_utf_bom .
 
-  methods CONSTRUCTOR
-    importing
-      !IO_X_READER type ref to ZIF_IO_X_READER
-      !I_ENCODING type CPCODEPAGE optional
-      !I_UTF_BOM type ABAP_BOOL default ABAP_TRUE
-      !I_REPL_CHAR type CHAR1 default '#'
-      !I_LINEFEED_MODE type DSET_CHANGEABLE_ATTRIBUTES-LINEFEED_MODE optional .
-  methods SET_UTF_BOM
-    importing
-      !I_UTF_BOM type ABAP_BOOL .
-  methods SET_ENCODING
-    importing
-      !I_ENCODING type CPCODEPAGE .
-  methods SET_REPL_CHAR
-    importing
-      !I_REPL_CHAR type CHAR1 .
-  methods SET_LINEFEED_MODE
-    importing
-      !I_LINEFEED_MODE type DSET_CHANGEABLE_ATTRIBUTES-LINEFEED_MODE .
-  methods CHECK_BOM .
-  methods GET_BYTE_OFFSET
-    importing
-      !I_STRING type CSEQUENCE
-      !I_OFFSET type I
-      !I_CODEPAGE type CPCODEPAGE
-    returning
-      value(RESULT) type I .
-  methods READ_CHARS
-    importing
-      !LENGTH type NUMERIC
-    returning
-      value(RESULT) type STRING
-    raising
-      ZCX_IO_PARAMETER_INVALID_RANGE
-      ZCX_IO_RESOURCE_ALREADY_CLOSED
-      ZCX_IO_STREAM_ERROR .
-protected section.
-private section.
+    METHODS constructor
+      IMPORTING
+        !io_x_reader     TYPE REF TO zif_io_x_reader
+        !i_encoding      TYPE cpcodepage OPTIONAL
+        !i_utf_bom       TYPE abap_bool DEFAULT abap_true
+        !i_repl_char     TYPE char1 DEFAULT '#'
+        !i_linefeed_mode TYPE dset_changeable_attributes-linefeed_mode OPTIONAL .
 
-  data AIO_X_READER type ref to ZCL_IO_FILTER_BUFF_X_READER .
-  data AI_CODEPAGE type CPCODEPAGE .
-  data AI_OFFSET type I .
-  data AI_BUFFER_C type STRING .
-  data AI_BUFFER_SIZE type I value 10000 ##NO_TEXT.
-  data AIO_CONV_OBJ type ref to CL_ABAP_CONV_OBJ .
-  data AIO_CONV_OUT type ref to CL_ABAP_CONV_OUT_CE .
-  data AI_UTF_BOM type ABAP_BOOL .
-  data AI_REPL_CHAR type CHAR1 .
-  data AI_LINEFEED_MODE type DSET_CHANGEABLE_ATTRIBUTES-LINEFEED_MODE .
+    METHODS set_utf_bom
+      IMPORTING
+        !i_utf_bom TYPE abap_bool .
+
+    METHODS set_encoding
+      IMPORTING
+        !i_encoding TYPE cpcodepage .
+
+    METHODS set_repl_char
+      IMPORTING
+        !i_repl_char TYPE char1 .
+
+    METHODS set_linefeed_mode
+      IMPORTING
+        !i_linefeed_mode TYPE dset_changeable_attributes-linefeed_mode .
+
+    METHODS check_bom .
+
+    METHODS get_byte_offset
+      IMPORTING
+        !i_string     TYPE csequence
+        !i_offset     TYPE i
+        !i_codepage   TYPE cpcodepage
+      RETURNING
+        VALUE(result) TYPE i .
+
+    METHODS read_chars
+      IMPORTING
+        !length       TYPE numeric
+      RETURNING
+        VALUE(result) TYPE string
+      RAISING
+        zcx_io_parameter_invalid_range
+        zcx_io_resource_already_closed
+        zcx_io_stream_error .
+
+  PROTECTED SECTION.
+  PRIVATE SECTION.
+
+    DATA aio_x_reader TYPE REF TO zcl_io_filter_buff_x_reader .
+    DATA ai_codepage TYPE cpcodepage .
+    DATA ai_offset TYPE i .
+    DATA ai_buffer_c TYPE string .
+    DATA ai_buffer_size TYPE i VALUE 10000 ##NO_TEXT.
+    DATA aio_conv_obj TYPE REF TO cl_abap_conv_obj .
+    DATA aio_conv_out TYPE REF TO cl_abap_conv_out_ce .
+    DATA ai_utf_bom TYPE abap_bool .
+    DATA ai_repl_char TYPE char1 .
+    DATA ai_linefeed_mode TYPE dset_changeable_attributes-linefeed_mode .
 ENDCLASS.
 
 
 
-CLASS ZCL_IO_MISC_XC_READER IMPLEMENTATION.
+CLASS zcl_io_misc_xc_reader IMPLEMENTATION.
 
 
-  method CHECK_BOM.
+  METHOD check_bom.
 
     DATA bytes TYPE x LENGTH 3.
 
@@ -128,10 +137,10 @@ CLASS ZCL_IO_MISC_XC_READER IMPLEMENTATION.
       ENDIF.
     ENDIF.
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method CONSTRUCTOR.
+  METHOD constructor.
 
 *    aio_x_reader = io_x_reader.
     CREATE OBJECT aio_x_reader
@@ -145,13 +154,13 @@ CLASS ZCL_IO_MISC_XC_READER IMPLEMENTATION.
     set_linefeed_mode( i_linefeed_mode ).
     set_repl_char( i_repl_char ).
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method GET_BYTE_OFFSET.
+  METHOD get_byte_offset.
 
-    DATA: l_string    TYPE xstring,
-          l_xstring   TYPE xstring.
+    DATA: l_string  TYPE xstring,
+          l_xstring TYPE xstring.
 
     IF i_offset IS INITIAL.
       result = 0.
@@ -159,13 +168,13 @@ CLASS ZCL_IO_MISC_XC_READER IMPLEMENTATION.
       l_string = i_string(i_offset).
       aio_conv_out->convert( EXPORTING data = l_string
                   IMPORTING buffer = l_xstring ).
-      result = XSTRLEN( l_xstring ).
+      result = xstrlen( l_xstring ).
     ENDIF.
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method READ_CHARS.
+  METHOD read_chars.
 
     DATA l_bytes TYPE abap_msize.
     DATA l_string TYPE string.
@@ -179,40 +188,40 @@ CLASS ZCL_IO_MISC_XC_READER IMPLEMENTATION.
 
     l_remaining_length = length.
 
-    DO. "jusqu'à ce que le nombre de caractères demandés soit lu
+    DO. "jusqu'Ã  ce que le nombre de caractÃ¨res demandÃ©s soit lu
 
-* extraire les caractères du buffer de caractères
-      IF STRLEN( ai_buffer_c ) < l_remaining_length.
-*       cas où le buffer ne contient pas assez de caractères
+* extraire les caractÃ¨res du buffer de caractÃ¨res
+      IF strlen( ai_buffer_c ) < l_remaining_length.
+*       cas oÃ¹ le buffer ne contient pas assez de caractÃ¨res
 
-*       1) ajouter au résultat tous les caractères du buffer
+*       1) ajouter au rÃ©sultat tous les caractÃ¨res du buffer
         CONCATENATE result ai_buffer_c INTO result.
         CLEAR ai_buffer_c.
-*       2) re-remplir le buffer de caractères en complétant le
-*         buffer d'octets et les convertir en caractères
+*       2) re-remplir le buffer de caractÃ¨res en complÃ©tant le
+*         buffer d'octets et les convertir en caractÃ¨res
         IF abap_false = aio_x_reader->data_available( ).
 *         zut il n'y a plus rien!
           EXIT.
         ENDIF.
         l_xstring = read_bytes( ai_buffer_size ).
-        l_bytes = XSTRLEN( l_xstring ).
+        l_bytes = xstrlen( l_xstring ).
         ADD l_bytes TO ai_offset.
-*         Convertir en caractères
+*         Convertir en caractÃ¨res
         CLEAR l_string.
         CALL METHOD aio_conv_obj->convert
           EXPORTING
             inbuff    = l_xstring
-            outbufflg = length "nombre de caractères à obtenir
+            outbufflg = length "nombre de caractÃ¨res Ã  obtenir
           IMPORTING
-            outbuff   = l_string "caractères décodés
-            inused    = l_inused. "combien d'octets correspondent aux caractères décodés
+            outbuff   = l_string "caractÃ¨res dÃ©codÃ©s
+            inused    = l_inused. "combien d'octets correspondent aux caractÃ¨res dÃ©codÃ©s
         CONCATENATE ai_buffer_c l_string INTO ai_buffer_c.
 
       ELSE.
-*       cas où le buffer contient assez de caractères
+*       cas oÃ¹ le buffer contient assez de caractÃ¨res
         CONCATENATE result ai_buffer_c(l_remaining_length) INTO result.
-*       enlever ces caractères du buffer
-        IF STRLEN( ai_buffer_c ) = l_remaining_length.
+*       enlever ces caractÃ¨res du buffer
+        IF strlen( ai_buffer_c ) = l_remaining_length.
           CLEAR ai_buffer_c.
         ELSE.
           ai_buffer_c = ai_buffer_c+l_remaining_length.
@@ -221,10 +230,10 @@ CLASS ZCL_IO_MISC_XC_READER IMPLEMENTATION.
       ENDIF.
     ENDDO.
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method SET_ENCODING.
+  METHOD set_encoding.
 
     DATA l_codepage TYPE cpcodepage.
     DATA l_codepage2 TYPE cpcodepage.
@@ -238,80 +247,80 @@ CLASS ZCL_IO_MISC_XC_READER IMPLEMENTATION.
         outcode = l_codepage2
         broken  = 'R'. "Conversion is canceled before any doubtful byte sequence
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method SET_LINEFEED_MODE.
+  METHOD set_linefeed_mode.
 
     ai_linefeed_mode = i_linefeed_mode.
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method SET_REPL_CHAR.
+  METHOD set_repl_char.
 
     ai_repl_char = i_repl_char.
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method SET_UTF_BOM.
+  METHOD set_utf_bom.
 
     ai_utf_bom = i_utf_bom.
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method ZIF_IO_CLOSE_RESOURCE~CLOSE.
-  endmethod.
+  METHOD zif_io_close_resource~close.
+  ENDMETHOD.
 
 
-  method ZIF_IO_CLOSE_RESOURCE~IS_CLOSED.
-  endmethod.
+  METHOD zif_io_close_resource~is_closed.
+  ENDMETHOD.
 
 
-  method ZIF_IO_READER~DATA_AVAILABLE.
-  endmethod.
+  METHOD zif_io_reader~data_available.
+  ENDMETHOD.
 
 
-  method ZIF_IO_READER~DELETE_MARK.
-  endmethod.
+  METHOD zif_io_reader~delete_mark.
+  ENDMETHOD.
 
 
-  method ZIF_IO_READER~IS_MARK_SUPPORTED.
-  endmethod.
+  METHOD zif_io_reader~is_mark_supported.
+  ENDMETHOD.
 
 
-  method ZIF_IO_READER~IS_RESET_SUPPORTED.
-  endmethod.
+  METHOD zif_io_reader~is_reset_supported.
+  ENDMETHOD.
 
 
-  method ZIF_IO_READER~IS_X_READER.
-  endmethod.
+  METHOD zif_io_reader~is_x_reader.
+  ENDMETHOD.
 
 
-  method ZIF_IO_READER~READ.
+  METHOD zif_io_reader~read.
 
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method ZIF_IO_READER~RESET.
-  endmethod.
+  METHOD zif_io_reader~reset.
+  ENDMETHOD.
 
 
-  method ZIF_IO_READER~RESET_TO_MARK.
-  endmethod.
+  METHOD zif_io_reader~reset_to_mark.
+  ENDMETHOD.
 
 
-  method ZIF_IO_READER~SET_MARK.
-  endmethod.
+  METHOD zif_io_reader~set_mark.
+  ENDMETHOD.
 
 
-  method ZIF_IO_READER~SKIP.
-  endmethod.
+  METHOD zif_io_reader~skip.
+  ENDMETHOD.
 
 
-  method ZIF_IO_X_READER~READ.
-  endmethod.
+  METHOD zif_io_x_reader~read.
+  ENDMETHOD.
 ENDCLASS.

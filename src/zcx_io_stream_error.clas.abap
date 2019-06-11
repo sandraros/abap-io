@@ -1,11 +1,13 @@
-class ZCX_IO_STREAM_ERROR definition
-  public
-  inheriting from CX_STATIC_CHECK
-  create public .
+"! <p class="shorttext synchronized" lang="en"></p>
+"!
+CLASS zcx_io_stream_error DEFINITION
+  PUBLIC
+  INHERITING FROM cx_static_check
+  CREATE PUBLIC .
 
-public section.
-protected section.
-private section.
+  PUBLIC SECTION.
+  PROTECTED SECTION.
+  PRIVATE SECTION.
 ENDCLASS.
 
 

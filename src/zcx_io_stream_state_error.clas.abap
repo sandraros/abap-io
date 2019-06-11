@@ -1,14 +1,15 @@
-class ZCX_IO_STREAM_STATE_ERROR definition
-  public
-  inheriting from ZCX_IO_STREAM_ERROR
-  create public .
+"! <p class="shorttext synchronized" lang="en"></p>
+CLASS zcx_io_stream_state_error DEFINITION
+  PUBLIC
+  INHERITING FROM zcx_io_stream_error
+  CREATE PUBLIC .
 
-public section.
-protected section.
-private section.
+  PUBLIC SECTION.
+  PROTECTED SECTION.
+  PRIVATE SECTION.
 ENDCLASS.
 
 
 
-CLASS ZCX_IO_STREAM_STATE_ERROR IMPLEMENTATION.
+CLASS zcx_io_stream_state_error IMPLEMENTATION.
 ENDCLASS.

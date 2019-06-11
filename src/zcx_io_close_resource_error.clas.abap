@@ -1,14 +1,16 @@
-class ZCX_IO_CLOSE_RESOURCE_ERROR definition
-  public
-  inheriting from ZCX_IO_STREAM_ERROR
-  create public .
+"! <p class="shorttext synchronized" lang="en"></p>
+"!
+CLASS zcx_io_close_resource_error DEFINITION
+  PUBLIC
+  INHERITING FROM zcx_io_stream_error
+  CREATE PUBLIC .
 
-public section.
-protected section.
-private section.
+  PUBLIC SECTION.
+  PROTECTED SECTION.
+  PRIVATE SECTION.
 ENDCLASS.
 
 
 
-CLASS ZCX_IO_CLOSE_RESOURCE_ERROR IMPLEMENTATION.
+CLASS zcx_io_close_resource_error IMPLEMENTATION.
 ENDCLASS.

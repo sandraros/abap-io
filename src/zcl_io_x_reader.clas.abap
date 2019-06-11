@@ -1,4 +1,4 @@
-"! <p class="shorttext synchronized" lang="en">Z</p>
+"! <p class="shorttext synchronized" lang="en">Byte reader</p>
 CLASS zcl_io_x_reader DEFINITION
   PUBLIC
   ABSTRACT
@@ -68,6 +68,9 @@ CLASS zcl_io_x_reader IMPLEMENTATION.
 
 
   METHOD zif_io_reader~data_available.
+    CALL METHOD me->('DATA_AVAILABLE')
+      RECEIVING
+        available = available.
   ENDMETHOD.
 
 
@@ -88,6 +91,11 @@ CLASS zcl_io_x_reader IMPLEMENTATION.
 
 
   METHOD zif_io_reader~read.
+    CALL METHOD me->('READ_INTERNAL')
+      EXPORTING
+        length = length
+      RECEIVING
+        read_data = read_data.
   ENDMETHOD.
 
 
@@ -109,7 +117,9 @@ CLASS zcl_io_x_reader IMPLEMENTATION.
 
   METHOD zif_io_x_reader~read.
     CALL METHOD me->('READ_INTERNAL')
-        EXPORTING length = length
-        RECEIVING result = RESULT.
+      EXPORTING
+        length = length
+      RECEIVING
+        result = result.
   ENDMETHOD.
 ENDCLASS.

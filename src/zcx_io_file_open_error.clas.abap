@@ -1,14 +1,16 @@
-class ZCX_IO_FILE_OPEN_ERROR definition
-  public
-  inheriting from ZCX_IO_FREETEXT
-  create public .
+"! <p class="shorttext synchronized" lang="en"></p>
+"!
+CLASS zcx_io_file_open_error DEFINITION
+  PUBLIC
+  INHERITING FROM zcx_io_freetext
+  CREATE PUBLIC .
 
-public section.
-protected section.
-private section.
+  PUBLIC SECTION.
+  PROTECTED SECTION.
+  PRIVATE SECTION.
 ENDCLASS.
 
 
 
-CLASS ZCX_IO_FILE_OPEN_ERROR IMPLEMENTATION.
+CLASS zcx_io_file_open_error IMPLEMENTATION.
 ENDCLASS.

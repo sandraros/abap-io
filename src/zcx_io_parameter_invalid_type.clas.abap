@@ -1,29 +1,31 @@
-class ZCX_IO_PARAMETER_INVALID_TYPE definition
-  public
-  inheriting from ZCX_IO_PARAMETER_INVALID
-  create public .
+"! <p class="shorttext synchronized" lang="en"></p>
+"!
+CLASS zcx_io_parameter_invalid_type DEFINITION
+  PUBLIC
+  INHERITING FROM zcx_io_parameter_invalid
+  CREATE PUBLIC .
 
-public section.
+  PUBLIC SECTION.
 
-  constants ZCX_IO_PARAMETER_INVALID_TYPE type SOTR_CONC value '0017206A92371DECB18030FE4A64F060' ##NO_TEXT.
-  data TYPE type STRING .
+    CONSTANTS zcx_io_parameter_invalid_type TYPE sotr_conc VALUE '0017206A92371DECB18030FE4A64F060' ##NO_TEXT.
+    DATA type TYPE string .
 
-  methods CONSTRUCTOR
-    importing
-      !TEXTID like TEXTID optional
-      !PREVIOUS like PREVIOUS optional
-      !PARAMETER type STRING optional
-      !TYPE type STRING optional .
-protected section.
-private section.
+    METHODS constructor
+      IMPORTING
+        !textid    LIKE textid OPTIONAL
+        !previous  LIKE previous OPTIONAL
+        !parameter TYPE string OPTIONAL
+        !type      TYPE string OPTIONAL .
+  PROTECTED SECTION.
+  PRIVATE SECTION.
 ENDCLASS.
 
 
 
-CLASS ZCX_IO_PARAMETER_INVALID_TYPE IMPLEMENTATION.
+CLASS zcx_io_parameter_invalid_type IMPLEMENTATION.
 
 
-  method CONSTRUCTOR.
+  METHOD constructor ##ADT_SUPPRESS_GENERATION.
 
     CALL METHOD super->constructor
       EXPORTING
@@ -35,5 +37,5 @@ CLASS ZCX_IO_PARAMETER_INVALID_TYPE IMPLEMENTATION.
     ENDIF.
     me->type = type .
 
-  endmethod.
+  ENDMETHOD.
 ENDCLASS.

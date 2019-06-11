@@ -1,106 +1,101 @@
-class ZCL_IO_STRING_C_READER definition
-  public
-  inheriting from ZCL_IO_MEMORY_C_READER
-  final
-  create public
+"! <p class="shorttext synchronized" lang="en">String reader</p>
+CLASS zcl_io_string_c_reader DEFINITION
+  PUBLIC
+  INHERITING FROM zcl_io_memory_c_reader
+  FINAL
+  CREATE PUBLIC
 
-  global friends ZCL_IO_C_READER .
+  GLOBAL FRIENDS zcl_io_c_reader .
 
-public section.
-  type-pools ABAP .
+  PUBLIC SECTION.
+    TYPE-POOLS abap .
 
-  interfaces ZIF_IO_STRING_READER .
+    INTERFACES zif_io_string_reader .
 
-  methods CONSTRUCTOR
-    importing
-      !STR type STRING .
+    METHODS constructor
+      IMPORTING
+        !str TYPE string .
 
-  methods DELETE_MARK
-    redefinition .
-  methods ZIF_IO_READER~IS_MARK_SUPPORTED
-    redefinition .
-  methods ZIF_IO_READER~IS_RESET_SUPPORTED
-    redefinition .
-  methods ZIF_IO_READER~RESET
-    redefinition .
-  methods ZIF_IO_READER~RESET_TO_MARK
-    redefinition .
-  methods ZIF_IO_READER~SET_MARK
-    redefinition .
-protected section.
-private section.
+    METHODS zif_io_reader~is_mark_supported
+        REDEFINITION .
+    METHODS zif_io_reader~is_reset_supported
+        REDEFINITION .
+    METHODS zif_io_reader~reset
+        REDEFINITION .
+    METHODS zif_io_reader~reset_to_mark
+        REDEFINITION .
+    METHODS zif_io_reader~set_mark
+        REDEFINITION .
+    METHODS zif_io_reader~delete_mark
+        REDEFINITION .
+  PROTECTED SECTION.
+  PRIVATE SECTION.
 
-  data M_STR type STRING .
-  data M_OFFSET type ABAP_MSIZE value 0 ##NO_TEXT.
-  data M_MARK type ABAP_MSIZE value -1 ##NO_TEXT.
+    DATA m_str TYPE string .
+    DATA m_offset TYPE abap_msize VALUE 0 ##NO_TEXT.
+    DATA m_mark TYPE abap_msize VALUE -1 ##NO_TEXT.
 
-  methods DATA_AVAILABLE_INTERNAL
-    returning
-      value(AVAILABLE) type ABAP_BOOL .
-  methods READ_INTERNAL
-    importing
-      !LENGTH type NUMERIC
-    returning
-      value(RESULT) type STRING .
+    METHODS data_available_internal
+      RETURNING
+        VALUE(available) TYPE abap_bool .
+    METHODS read_internal
+      IMPORTING
+        !length       TYPE numeric
+      RETURNING
+        VALUE(result) TYPE string .
 ENDCLASS.
 
 
 
-CLASS ZCL_IO_STRING_C_READER IMPLEMENTATION.
+CLASS zcl_io_string_c_reader IMPLEMENTATION.
 
 
-  method CONSTRUCTOR.
+  METHOD constructor.
 
     super->constructor( ).
     m_str = str.
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method DATA_AVAILABLE_INTERNAL.
+  METHOD data_available_internal.
 
-    IF m_offset < STRLEN( m_str ).
+    IF m_offset < strlen( m_str ).
       available = abap_true.
     ENDIF.
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method DELETE_MARK.
-*CALL METHOD SUPER->DELETE_MARK
-*    .
-  endmethod.
-
-
-  method READ_INTERNAL.
-
+  METHOD read_internal.
     DATA l_dummy TYPE i.
+
     l_dummy = length + m_offset.
-    IF l_dummy > STRLEN( m_str ).
+    IF l_dummy > strlen( m_str ).
       result = m_str+m_offset(*).
     ELSE.
       result = m_str+m_offset(length).
     ENDIF.
     m_offset = l_dummy.
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method ZIF_IO_READER~IS_MARK_SUPPORTED.
+  METHOD zif_io_reader~is_mark_supported.
 
     res = abap_true.
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method ZIF_IO_READER~IS_RESET_SUPPORTED.
+  METHOD zif_io_reader~is_reset_supported.
 
     result = abap_true.
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method ZIF_IO_READER~RESET.
+  METHOD zif_io_reader~reset.
 
     IF is_closed( ) = abap_true.
       RAISE EXCEPTION TYPE zcx_io_resource_already_closed.
@@ -108,29 +103,40 @@ CLASS ZCL_IO_STRING_C_READER IMPLEMENTATION.
     m_offset = 0.
     m_mark = -1.
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method ZIF_IO_READER~RESET_TO_MARK.
+  METHOD zif_io_reader~reset_to_mark.
 
     IF is_closed( ) = abap_true.
       RAISE EXCEPTION TYPE zcx_io_resource_already_closed.
     ENDIF.
     IF m_mark = -1.
       RAISE EXCEPTION TYPE zcx_io_stream_position_error
-        EXPORTING textid = zcx_io_stream_position_error=>zcx_io_mark_not_set.
+        EXPORTING
+          textid = zcx_io_stream_position_error=>zcx_io_mark_not_set.
     ENDIF.
     m_offset = m_mark.
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method ZIF_IO_READER~SET_MARK.
+  METHOD zif_io_reader~set_mark.
 
     IF is_closed( ) = abap_true.
       RAISE EXCEPTION TYPE zcx_io_resource_already_closed.
     ENDIF.
     m_mark = m_offset.
 
-  endmethod.
+  ENDMETHOD.
+
+  METHOD zif_io_reader~delete_mark.
+
+    IF is_closed( ) = abap_true.
+      RAISE EXCEPTION TYPE zcx_io_resource_already_closed.
+    ENDIF.
+    m_mark = -1.
+
+  ENDMETHOD.
+
 ENDCLASS.
