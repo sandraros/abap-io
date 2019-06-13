@@ -1,4 +1,4 @@
-"! <p class="shorttext synchronized" lang="en">Character reader</p>
+"! <p class="shorttext synchronized" lang="en">Abstract character reader</p>
 CLASS zcl_io_c_reader DEFINITION
   PUBLIC
   ABSTRACT

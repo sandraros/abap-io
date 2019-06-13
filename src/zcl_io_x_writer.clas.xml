@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_IO_X_WRITER</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>Byte writer</DESCRIPT>
+    <DESCRIPT>Abstract byte writer</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

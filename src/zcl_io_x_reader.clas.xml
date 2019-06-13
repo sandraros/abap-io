@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_IO_X_READER</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>Byte reader</DESCRIPT>
+    <DESCRIPT>Abstract byte reader</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

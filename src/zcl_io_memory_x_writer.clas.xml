@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_IO_MEMORY_X_WRITER</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>Z</DESCRIPT>
+    <DESCRIPT>Abstract data object byte writer</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

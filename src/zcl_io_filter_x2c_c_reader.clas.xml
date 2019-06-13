@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_IO_FILTER_X2C_C_READER</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>Z</DESCRIPT>
+    <DESCRIPT>Byte to Character reader (given a code page)</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

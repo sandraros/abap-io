@@ -1,3 +1,5 @@
+"! <p class="shorttext synchronized" lang="en">Internal table character writer</p>
+"!
 class ZCL_IO_ITAB_C_WRITER definition
   public
   inheriting from ZCL_IO_MEMORY_C_WRITER

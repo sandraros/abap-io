@@ -1,18 +1,18 @@
-"! <p class="shorttext synchronized" lang="en">Abstract data object reader</p>
-class ZCL_IO_MEMORY_C_READER definition
-  public
-  inheriting from ZCL_IO_C_READER
-  abstract
-  create public .
+"! <p class="shorttext synchronized" lang="en">Abstract data object character reader</p>
+CLASS zcl_io_memory_c_reader DEFINITION
+  PUBLIC
+  INHERITING FROM zcl_io_c_reader
+  ABSTRACT
+  CREATE PUBLIC .
 
-public section.
+  PUBLIC SECTION.
 
-  interfaces ZIF_IO_MEMORY_READER .
-protected section.
-private section.
+    INTERFACES zif_io_memory_reader .
+  PROTECTED SECTION.
+  PRIVATE SECTION.
 ENDCLASS.
 
 
 
-CLASS ZCL_IO_MEMORY_C_READER IMPLEMENTATION.
+CLASS zcl_io_memory_c_reader IMPLEMENTATION.
 ENDCLASS.

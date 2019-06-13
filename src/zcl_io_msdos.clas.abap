@@ -1,41 +1,43 @@
-class ZCL_IO_MSDOS definition
-  public
-  final
-  create public .
+"! <p class="shorttext synchronized" lang="en">MS/DOS Utilities (for ZIP algorithm)</p>
+"!
+CLASS zcl_io_msdos DEFINITION
+  PUBLIC
+  FINAL
+  CREATE PUBLIC .
 
-public section.
+  PUBLIC SECTION.
 
-  class-methods TO_DATE
-    importing
-      !DATE type D
-    returning
-      value(MSDOS_DATE) type I .
-  class-methods TO_TIME
-    importing
-      !TIME type T
-    returning
-      value(MSDOS_TIME) type I .
-  class-methods FROM_DATE
-    importing
-      !MSDOS_DATE type I
-    returning
-      value(DATE) type D .
-  class-methods FROM_TIME
-    importing
-      !MSDOS_TIME type I
-    returning
-      value(TIME) type T .
-protected section.
-private section.
+    CLASS-METHODS to_date
+      IMPORTING
+        !date             TYPE d
+      RETURNING
+        VALUE(msdos_date) TYPE i .
+    CLASS-METHODS to_time
+      IMPORTING
+        !time             TYPE t
+      RETURNING
+        VALUE(msdos_time) TYPE i .
+    CLASS-METHODS from_date
+      IMPORTING
+        !msdos_date TYPE i
+      RETURNING
+        VALUE(date) TYPE d .
+    CLASS-METHODS from_time
+      IMPORTING
+        !msdos_time TYPE i
+      RETURNING
+        VALUE(time) TYPE t .
+  PROTECTED SECTION.
+  PRIVATE SECTION.
 ENDCLASS.
 
 
 
-CLASS ZCL_IO_MSDOS IMPLEMENTATION.
+CLASS zcl_io_msdos IMPLEMENTATION.
 
 
-  method FROM_DATE.
- " IMPORTING msdos_date TYPE i RETURNING value(date) TYPE d
+  METHOD from_date.
+    " IMPORTING msdos_date TYPE i RETURNING value(date) TYPE d
 
 *   MS-DOS format for date:
 *     Bits 15:9 = year - 1980
@@ -84,11 +86,11 @@ CLASS ZCL_IO_MSDOS IMPLEMENTATION.
     date = str.
 
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method FROM_TIME.
- " IMPORTING msdos_time TYPE i RETURNING value(time) TYPE t.
+  METHOD from_time.
+    " IMPORTING msdos_time TYPE i RETURNING value(time) TYPE t.
 
 *   MS-DOS format for time:
 *     Bits 15:11 = hour   (24-hour clock)
@@ -132,11 +134,11 @@ CLASS ZCL_IO_MSDOS IMPLEMENTATION.
     time = str.
 
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method TO_DATE.
- " IMPORTING date TYPE d RETURNING value(msdos_date) TYPE i.
+  METHOD to_date.
+    " IMPORTING date TYPE d RETURNING value(msdos_date) TYPE i.
 
 *   MS-DOS format for date:
 *     Bits 15:9 = year - 1980
@@ -169,11 +171,11 @@ CLASS ZCL_IO_MSDOS IMPLEMENTATION.
     msdos_date = xdate.
 
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method TO_TIME.
- " IMPORTING time TYPE t RETURNING value(msdos_time) TYPE i.
+  METHOD to_time.
+    " IMPORTING time TYPE t RETURNING value(msdos_time) TYPE i.
 
 *   MS-DOS format for time:
 *     Bits 15:11 = hour   (24-hour clock)
@@ -206,5 +208,5 @@ CLASS ZCL_IO_MSDOS IMPLEMENTATION.
     msdos_time = xtime.
 
 
-  endmethod.
+  ENDMETHOD.
 ENDCLASS.

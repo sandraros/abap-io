@@ -1,3 +1,5 @@
+"! <p class="shorttext synchronized" lang="en">Character string writer</p>
+"!
 class ZCL_IO_STRING_C_WRITER definition
   public
   inheriting from ZCL_IO_MEMORY_C_WRITER

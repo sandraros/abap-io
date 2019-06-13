@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_IO_ITAB_C_READER</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>Itab character reader</DESCRIPT>
+    <DESCRIPT>Internal table character reader</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

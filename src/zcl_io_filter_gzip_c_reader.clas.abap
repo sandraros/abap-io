@@ -1,3 +1,4 @@
+"! <p class="shorttext synchronized" lang="en">GZIP Character reader</p>
 class ZCL_IO_FILTER_GZIP_C_READER definition
   public
   create public
@@ -99,10 +100,10 @@ CLASS ZCL_IO_FILTER_GZIP_C_READER IMPLEMENTATION.
 
     DATA ls_ungzip_stream TYPE ty_is_ungzip_stream.
     DATA lo_gzip_c_reader TYPE REF TO zcl_io_filter_gzip_c_reader.
-* méthode appelée tous les 1000 octets (à cause de SET_OUT_BUF), et à la fin
+* mÃ©thode appelÃ©e tous les 1000 octets (Ã  cause de SET_OUT_BUF), et Ã  la fin
 * OUT_BUF       XSEQUENCE   Output Buffer
 * OUT_BUF_LEN   I           Length of Output Buffer
-* PART          I           Segment (compteur à partir de 1, qui s'incrémente de 1 à chaque appel)
+* PART          I           Segment (compteur Ã  partir de 1, qui s'incrÃ©mente de 1 Ã  chaque appel)
 * GZIP_STREAM   Type Ref To cl_abap_UNGZIP_BINARY_STREAM
     READ TABLE kit_ungzip_stream INTO ls_ungzip_stream
           WITH TABLE KEY o_ungzip_stream = gzip_stream.

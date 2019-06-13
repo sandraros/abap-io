@@ -5,6 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_IO_MSDOS</CLSNAME>
     <LANGU>E</LANGU>
+    <DESCRIPT>MS/DOS Utilities (for ZIP algorithm)</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

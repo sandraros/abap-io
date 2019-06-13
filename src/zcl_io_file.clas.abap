@@ -1,4 +1,4 @@
-"! <p class="shorttext synchronized" lang="en"></p>
+"! <p class="shorttext synchronized" lang="en">File super class</p>
 "!
 CLASS zcl_io_file DEFINITION
   PUBLIC

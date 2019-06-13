@@ -1,4 +1,4 @@
-"! <p class="shorttext synchronized" lang="en">Itab character reader</p>
+"! <p class="shorttext synchronized" lang="en">Internal table character reader</p>
 class ZCL_IO_ITAB_C_READER definition
   public
   inheriting from ZCL_IO_MEMORY_C_READER

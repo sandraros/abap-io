@@ -1,112 +1,114 @@
-class ZCL_IO_FILTER_X2C_C_READER definition
-  public
-  create public .
+"! <p class="shorttext synchronized" lang="en">Byte to Character reader (given a code page)</p>
+CLASS zcl_io_filter_x2c_c_reader DEFINITION
+  PUBLIC
+  CREATE PUBLIC .
 
-public section.
+  PUBLIC SECTION.
 
-  interfaces ZIF_IO_CLOSE_RESOURCE .
-  interfaces ZIF_IO_C_READER .
-  interfaces ZIF_IO_READER .
+    INTERFACES zif_io_close_resource .
+    INTERFACES zif_io_c_reader .
+    INTERFACES zif_io_reader .
 
-  aliases CLOSE
-    for ZIF_IO_C_READER~CLOSE .
-  aliases DATA_AVAILABLE
-    for ZIF_IO_C_READER~DATA_AVAILABLE .
-  aliases DELETE_MARK
-    for ZIF_IO_C_READER~DELETE_MARK .
-  aliases IS_CLOSED
-    for ZIF_IO_C_READER~IS_CLOSED .
-  aliases IS_MARK_SUPPORTED
-    for ZIF_IO_C_READER~IS_MARK_SUPPORTED .
-  aliases IS_RESET_SUPPORTED
-    for ZIF_IO_C_READER~IS_RESET_SUPPORTED .
-  aliases IS_X_READER
-    for ZIF_IO_C_READER~IS_X_READER .
-  aliases READ
-    for ZIF_IO_C_READER~READ .
-  aliases RESET
-    for ZIF_IO_READER~RESET .
-  aliases RESET_TO_MARK
-    for ZIF_IO_C_READER~RESET_TO_MARK .
-  aliases SET_MARK
-    for ZIF_IO_C_READER~SET_MARK .
-  aliases SKIP
-    for ZIF_IO_C_READER~SKIP .
+    ALIASES close
+      FOR zif_io_c_reader~close .
+    ALIASES data_available
+      FOR zif_io_c_reader~data_available .
+    ALIASES delete_mark
+      FOR zif_io_c_reader~delete_mark .
+    ALIASES is_closed
+      FOR zif_io_c_reader~is_closed .
+    ALIASES is_mark_supported
+      FOR zif_io_c_reader~is_mark_supported .
+    ALIASES is_reset_supported
+      FOR zif_io_c_reader~is_reset_supported .
+    ALIASES is_x_reader
+      FOR zif_io_c_reader~is_x_reader .
+    ALIASES read
+      FOR zif_io_c_reader~read .
+    ALIASES reset
+      FOR zif_io_reader~reset .
+    ALIASES reset_to_mark
+      FOR zif_io_c_reader~reset_to_mark .
+    ALIASES set_mark
+      FOR zif_io_c_reader~set_mark .
+    ALIASES skip
+      FOR zif_io_c_reader~skip .
 
-  methods CONSTRUCTOR
-    importing
-      !IO_X_READER type ref to ZIF_IO_X_READER
-      !I_ENCODING type ABAP_ENCODING .
-protected section.
-private section.
+    METHODS constructor
+      IMPORTING
+        !io_x_reader TYPE REF TO zif_io_x_reader
+        "! code page
+        !i_encoding  TYPE abap_encoding .
+  PROTECTED SECTION.
+  PRIVATE SECTION.
 
-  data AIO_X_READER type ref to ZIF_IO_X_READER .
-  data AI_ENCODING type ABAP_ENCODING .
+    DATA aio_x_reader TYPE REF TO zif_io_x_reader .
+    DATA ai_encoding TYPE abap_encoding .
 ENDCLASS.
 
 
 
-CLASS ZCL_IO_FILTER_X2C_C_READER IMPLEMENTATION.
+CLASS zcl_io_filter_x2c_c_reader IMPLEMENTATION.
 
 
-  method CONSTRUCTOR.
+  METHOD constructor.
 
     aio_x_reader = io_x_reader.
     ai_encoding  = i_encoding.
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method ZIF_IO_CLOSE_RESOURCE~CLOSE.
-  endmethod.
+  METHOD zif_io_close_resource~close.
+  ENDMETHOD.
 
 
-  method ZIF_IO_CLOSE_RESOURCE~IS_CLOSED.
-  endmethod.
+  METHOD zif_io_close_resource~is_closed.
+  ENDMETHOD.
 
 
-  method ZIF_IO_C_READER~READ.
-  endmethod.
+  METHOD zif_io_c_reader~read.
+  ENDMETHOD.
 
 
-  method ZIF_IO_READER~DATA_AVAILABLE.
-  endmethod.
+  METHOD zif_io_reader~data_available.
+  ENDMETHOD.
 
 
-  method ZIF_IO_READER~DELETE_MARK.
-  endmethod.
+  METHOD zif_io_reader~delete_mark.
+  ENDMETHOD.
 
 
-  method ZIF_IO_READER~IS_MARK_SUPPORTED.
-  endmethod.
+  METHOD zif_io_reader~is_mark_supported.
+  ENDMETHOD.
 
 
-  method ZIF_IO_READER~IS_RESET_SUPPORTED.
-  endmethod.
+  METHOD zif_io_reader~is_reset_supported.
+  ENDMETHOD.
 
 
-  method ZIF_IO_READER~IS_X_READER.
-  endmethod.
+  METHOD zif_io_reader~is_x_reader.
+  ENDMETHOD.
 
 
-  method ZIF_IO_READER~READ.
+  METHOD zif_io_reader~read.
 
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method ZIF_IO_READER~RESET.
-  endmethod.
+  METHOD zif_io_reader~reset.
+  ENDMETHOD.
 
 
-  method ZIF_IO_READER~RESET_TO_MARK.
-  endmethod.
+  METHOD zif_io_reader~reset_to_mark.
+  ENDMETHOD.
 
 
-  method ZIF_IO_READER~SET_MARK.
-  endmethod.
+  METHOD zif_io_reader~set_mark.
+  ENDMETHOD.
 
 
-  method ZIF_IO_READER~SKIP.
-  endmethod.
+  METHOD zif_io_reader~skip.
+  ENDMETHOD.
 ENDCLASS.

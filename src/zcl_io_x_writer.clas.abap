@@ -1,6 +1,7 @@
-"! <p class="shorttext synchronized" lang="en">Byte writer</p>
+"! <p class="shorttext synchronized" lang="en">Abstract byte writer</p>
 CLASS zcl_io_x_writer DEFINITION
   PUBLIC
+  ABSTRACT
   CREATE PUBLIC .
 
   PUBLIC SECTION.

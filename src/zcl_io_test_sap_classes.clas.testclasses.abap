@@ -14,6 +14,7 @@ CLASS ltc_main DEFINITION
 
     METHODS string_x_reader FOR TESTING RAISING cx_static_check.
     METHODS itab_x_reader FOR TESTING RAISING cx_static_check.
+    METHODS itab_x_writer FOR TESTING RAISING cx_static_check.
     METHODS itab_string_x_reader FOR TESTING RAISING cx_static_check.
     METHODS db_x_reader FOR TESTING RAISING cx_static_check.
 
@@ -156,6 +157,23 @@ CLASS ltc_main IMPLEMENTATION.
                    expect_avail_last_char      = abap_false
                    expect_exc_read_beyond_end  = abap_True ).
     ROLLBACK WORK.
+  ENDMETHOD.
+
+  METHOD itab_x_writer.
+*DATA writer TYPE REF TO cl_abap_itab_x_writer.
+*writer = new cl_abap_itab_x_writer(
+**    line_type                  = CL_ABAP_TYPEDESCR=>TYPEKIND_XSTRING
+**    line_length                = 255
+*).
+**  CATCH cx_parameter_invalid_range.  "
+*writer->write( data = '01FBEF' ).
+*writer->get_result_table(
+**  IMPORTING
+**    table               =
+**    length_of_last_line =     " Length of Last Row of Table
+*).
+**  CATCH cx_resource_already_closed.    "
+**  CATCH cx_stream_error.    "
   ENDMETHOD.
 
 ENDCLASS.

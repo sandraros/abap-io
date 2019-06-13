@@ -1,60 +1,60 @@
-class ZCL_IO_FILTER_ZIP definition
-  public
-  create public .
+CLASS zcl_io_filter_zip DEFINITION
+  PUBLIC
+  CREATE PUBLIC .
 
-public section.
+  PUBLIC SECTION.
 
-  types:
-    BEGIN OF t_file,
-             name TYPE string,
-             date TYPE d,
-             time TYPE t,
-             size TYPE i,
-           END OF t_file .
-  types:
-    t_files TYPE STANDARD TABLE OF t_file WITH DEFAULT KEY .
+    TYPES:
+      BEGIN OF t_file,
+        name TYPE string,
+        date TYPE d,
+        time TYPE t,
+        size TYPE i,
+      END OF t_file .
+    TYPES:
+      t_files TYPE STANDARD TABLE OF t_file WITH DEFAULT KEY .
 
-  class-methods GET_FILES
-    importing
-      !IO_X_READER type ref to ZIF_IO_X_READER
-    returning
-      value(FILES) type T_FILES
-    exceptions
-      ZIP_PARSE_ERROR .
-protected section.
-private section.
+    CLASS-METHODS get_files
+      IMPORTING
+        !io_x_reader TYPE REF TO zif_io_x_reader
+      RETURNING
+        VALUE(files) TYPE t_files
+      EXCEPTIONS
+        zip_parse_error .
+  PROTECTED SECTION.
+  PRIVATE SECTION.
 
-  types:
-    BEGIN OF t_ext,
-             min_extract_version TYPE i,
-             gen_flags           TYPE i,
-             compressed          TYPE i,
-             compsize            TYPE i,
-             crc32(4)            TYPE x,
-             filename_len        TYPE i,
-             filename            TYPE xstring,
-             extra_len           TYPE i,
-             extra               TYPE xstring,
-             content             TYPE xstring,
-           END OF t_ext .
-  types:
-    t_exts TYPE TABLE OF t_ext .
+    TYPES:
+      BEGIN OF t_ext,
+        min_extract_version TYPE i,
+        gen_flags           TYPE i,
+        compressed          TYPE i,
+        compsize            TYPE i,
+        crc32(4)            TYPE x,
+        filename_len        TYPE i,
+        filename            TYPE xstring,
+        extra_len           TYPE i,
+        extra               TYPE xstring,
+        content             TYPE xstring,
+      END OF t_ext .
+    TYPES:
+      t_exts TYPE TABLE OF t_ext .
 
-  class-data EXTS type T_EXTS .
+    CLASS-DATA exts TYPE t_exts .
 ENDCLASS.
 
 
 
-CLASS ZCL_IO_FILTER_ZIP IMPLEMENTATION.
+CLASS zcl_io_filter_zip IMPLEMENTATION.
 
 
-  method GET_FILES.
+  METHOD get_files.
 
     DATA lo_buff TYPE REF TO zcl_io_filter_buff_x_reader.
     CREATE OBJECT lo_buff
       EXPORTING
         io_x_reader   = io_x_reader
-        i_buffer_size = 0. "buffer infini
+        i_buffer_size = 0. " endless buffer
 
 * Documentation from: http://www.pkware.com/company/standards/appnote/appnote.txt
 
@@ -78,7 +78,7 @@ CLASS ZCL_IO_FILTER_ZIP IMPLEMENTATION.
       buff_stream 2.
       w2     = lo_buff->buffer+offset(2).
       offset = offset + 2.
-      concatenate w2+1(1) w2+0(1) into xstr in byte mode.
+      CONCATENATE w2+1(1) w2+0(1) INTO xstr IN BYTE MODE.
       &1     = xstr.
     END-OF-DEFINITION.
 
@@ -91,7 +91,7 @@ CLASS ZCL_IO_FILTER_ZIP IMPLEMENTATION.
       buff_stream 4.
       w4     = lo_buff->buffer+offset(4).
       offset = offset + 4.
-      concatenate w4+3(1) w4+2(1) w4+1(1) w4+0(1) into xstr in byte mode.
+      CONCATENATE w4+3(1) w4+2(1) w4+1(1) w4+0(1) INTO xstr IN BYTE MODE.
       &1     = xstr.
     END-OF-DEFINITION.
     DEFINE buff_stream.
@@ -111,8 +111,8 @@ CLASS ZCL_IO_FILTER_ZIP IMPLEMENTATION.
 
 * Extract information about all files.
     DATA: msdos_date TYPE i, msdos_time TYPE i, file_no TYPE i VALUE 0.
-    FIELD-SYMBOLS:  <file> TYPE t_file,
-                    <ext>  TYPE t_ext.
+    FIELD-SYMBOLS: <file> TYPE t_file,
+                   <ext>  TYPE t_ext.
 
     buff_stream 4.
     WHILE offset < max_length AND lo_buff->buffer+offset(4) = '504B0304'.  " local file header signature
@@ -191,5 +191,5 @@ CLASS ZCL_IO_FILTER_ZIP IMPLEMENTATION.
     ENDWHILE.
 
 
-  endmethod.
+  ENDMETHOD.
 ENDCLASS.

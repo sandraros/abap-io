@@ -1,4 +1,4 @@
-"! <p class="shorttext synchronized" lang="en"></p>
+"! <p class="shorttext synchronized" lang="en">Front-end file character reader</p>
 "!
 CLASS zcl_io_frontend_c_reader DEFINITION
   PUBLIC

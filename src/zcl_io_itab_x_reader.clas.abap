@@ -1,4 +1,4 @@
-"! <p class="shorttext synchronized" lang="en">Z</p>
+"! <p class="shorttext synchronized" lang="en">Internal table byte reader</p>
 CLASS zcl_io_itab_x_reader DEFINITION
   PUBLIC
   INHERITING FROM zcl_io_memory_x_reader

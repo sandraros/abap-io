@@ -1,95 +1,97 @@
-class ZCL_IO_BACKEND definition
-  public
-  inheriting from ZCL_IO_FILE
-  create public .
+"! <p class="shorttext synchronized" lang="en">Back-end file</p>
+"!
+CLASS zcl_io_backend DEFINITION
+  PUBLIC
+  INHERITING FROM zcl_io_file
+  CREATE PUBLIC .
 
-public section.
-  type-pools DSET .
+  PUBLIC SECTION.
+    TYPE-POOLS dset .
 
-  constants:
-    BEGIN OF cs_mode,
-                  text          TYPE dset_fixed_attributes-mode VALUE dset_text_mode, "'T',
-                  binary        TYPE dset_fixed_attributes-mode VALUE dset_binary_mode,
-                  legacy_text   TYPE dset_fixed_attributes-mode VALUE dset_legacy_text_mode,
-                  legacy_binary TYPE dset_fixed_attributes-mode VALUE dset_legacy_binary_mode,
-                END OF cs_mode .
-  constants:
-    BEGIN OF cs_position,
-                  begin_of_file TYPE i VALUE 0,
-                  end_of_file   TYPE i VALUE -1,
-                END OF cs_position .
-  constants:
-    BEGIN OF cs_access_type,
-                  input     TYPE dset_fixed_attributes-access_type VALUE dset_input,
-                  output    TYPE dset_fixed_attributes-access_type VALUE dset_output,
-                  update    TYPE dset_fixed_attributes-access_type VALUE dset_update,
-                  appending TYPE dset_fixed_attributes-access_type VALUE dset_appending,
-                END OF cs_access_type .
-  constants:
-    BEGIN OF cs_encoding,
-                  none        TYPE dset_fixed_attributes-encoding VALUE '',
-                  default     TYPE dset_fixed_attributes-encoding VALUE 'DEFAULT',
-                  non_unicode TYPE dset_fixed_attributes-encoding VALUE 'NON-UNICODE',
-                  utf_8       TYPE dset_fixed_attributes-encoding VALUE 'UTF-8',
-                END OF cs_encoding .
-  data FILENAME type STRING read-only .
-  data MSG type MSG read-only .
-  data:
-    BEGIN OF aus_attr READ-ONLY,
-            mode              TYPE dset_fixed_attributes-mode,
-            access_type       TYPE dset_fixed_attributes-access_type,
-            encoding          TYPE dset_fixed_attributes-encoding,
-            process_utf8_bom  TYPE abap_bool,
-            repl_char         TYPE dset_changeable_attributes-repl_char,
-            conv_errors       TYPE dset_changeable_attributes-conv_errors,
-            code_page         TYPE dset_changeable_attributes-code_page,
-            endian            TYPE dset_changeable_attributes-endian,
-            linefeed_mode     TYPE dset_changeable_attributes-linefeed_mode,
-            type              TYPE string,
-            filter            TYPE dset_fixed_attributes-filter,
-          END OF aus_attr .
+    CONSTANTS:
+      BEGIN OF cs_mode,
+        text          TYPE dset_fixed_attributes-mode VALUE dset_text_mode, "'T',
+        binary        TYPE dset_fixed_attributes-mode VALUE dset_binary_mode,
+        legacy_text   TYPE dset_fixed_attributes-mode VALUE dset_legacy_text_mode,
+        legacy_binary TYPE dset_fixed_attributes-mode VALUE dset_legacy_binary_mode,
+      END OF cs_mode .
+    CONSTANTS:
+      BEGIN OF cs_position,
+        begin_of_file TYPE i VALUE 0,
+        end_of_file   TYPE i VALUE -1,
+      END OF cs_position .
+    CONSTANTS:
+      BEGIN OF cs_access_type,
+        input     TYPE dset_fixed_attributes-access_type VALUE dset_input,
+        output    TYPE dset_fixed_attributes-access_type VALUE dset_output,
+        update    TYPE dset_fixed_attributes-access_type VALUE dset_update,
+        appending TYPE dset_fixed_attributes-access_type VALUE dset_appending,
+      END OF cs_access_type .
+    CONSTANTS:
+      BEGIN OF cs_encoding,
+        none        TYPE dset_fixed_attributes-encoding VALUE '',
+        default     TYPE dset_fixed_attributes-encoding VALUE 'DEFAULT',
+        non_unicode TYPE dset_fixed_attributes-encoding VALUE 'NON-UNICODE',
+        utf_8       TYPE dset_fixed_attributes-encoding VALUE 'UTF-8',
+      END OF cs_encoding .
+    DATA filename TYPE string READ-ONLY .
+    DATA msg TYPE msg READ-ONLY .
+    DATA:
+      BEGIN OF aus_attr READ-ONLY,
+        mode             TYPE dset_fixed_attributes-mode,
+        access_type      TYPE dset_fixed_attributes-access_type,
+        encoding         TYPE dset_fixed_attributes-encoding,
+        process_utf8_bom TYPE abap_bool,
+        repl_char        TYPE dset_changeable_attributes-repl_char,
+        conv_errors      TYPE dset_changeable_attributes-conv_errors,
+        code_page        TYPE dset_changeable_attributes-code_page,
+        endian           TYPE dset_changeable_attributes-endian,
+        linefeed_mode    TYPE dset_changeable_attributes-linefeed_mode,
+        type             TYPE string,
+        filter           TYPE dset_fixed_attributes-filter,
+      END OF aus_attr .
 
-  methods CONSTRUCTOR
-    importing
-      !FILENAME type STRING
-      !MODE type DSET_FIXED_ATTRIBUTES-MODE default 'T'
-      !ACCESS_TYPE type DSET_FIXED_ATTRIBUTES-ACCESS_TYPE default DSET_INPUT
-      !ENCODING type DSET_FIXED_ATTRIBUTES-ENCODING optional
-      !PROCESS_UTF8_BOM type ABAP_BOOL optional
-      !REPL_CHAR type DSET_CHANGEABLE_ATTRIBUTES-REPL_CHAR optional
-      !CONV_ERRORS type DSET_CHANGEABLE_ATTRIBUTES-CONV_ERRORS optional
-      !CODE_PAGE type DSET_CHANGEABLE_ATTRIBUTES-CODE_PAGE optional
-      !ENDIAN type DSET_CHANGEABLE_ATTRIBUTES-ENDIAN optional
-      !LINEFEED_MODE type DSET_CHANGEABLE_ATTRIBUTES-LINEFEED_MODE optional
-      !TYPE type CSEQUENCE optional
-      !FILTER type DSET_FIXED_ATTRIBUTES-FILTER optional
-    raising
-      ZCX_IO_FILE_OPEN_ERROR .
-  methods GET_LINE_END_MARKER
-    returning
-      value(RESULT) type STRING .
+    METHODS constructor
+      IMPORTING
+        !filename         TYPE string
+        !mode             TYPE dset_fixed_attributes-mode DEFAULT 'T'
+        !access_type      TYPE dset_fixed_attributes-access_type DEFAULT dset_input
+        !encoding         TYPE dset_fixed_attributes-encoding OPTIONAL
+        !process_utf8_bom TYPE abap_bool OPTIONAL
+        !repl_char        TYPE dset_changeable_attributes-repl_char OPTIONAL
+        !conv_errors      TYPE dset_changeable_attributes-conv_errors OPTIONAL
+        !code_page        TYPE dset_changeable_attributes-code_page OPTIONAL
+        !endian           TYPE dset_changeable_attributes-endian OPTIONAL
+        !linefeed_mode    TYPE dset_changeable_attributes-linefeed_mode OPTIONAL
+        !type             TYPE csequence OPTIONAL
+        !filter           TYPE dset_fixed_attributes-filter OPTIONAL
+      RAISING
+        zcx_io_file_open_error .
+    METHODS get_line_end_marker
+      RETURNING
+        VALUE(result) TYPE string .
 
-  methods OPEN
-    redefinition .
-  methods CLOSE
-    redefinition .
-protected section.
-private section.
+    METHODS open
+        REDEFINITION .
+    METHODS close
+        REDEFINITION .
+  PROTECTED SECTION.
+  PRIVATE SECTION.
 ENDCLASS.
 
 
 
-CLASS ZCL_IO_BACKEND IMPLEMENTATION.
+CLASS zcl_io_backend IMPLEMENTATION.
 
 
-  method CLOSE.
-"
+  METHOD close.
+    "
     CLOSE DATASET filename.
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method CONSTRUCTOR.
+  METHOD constructor.
 
     CALL METHOD super->constructor.
     me->filename = filename.
@@ -105,10 +107,10 @@ CLASS ZCL_IO_BACKEND IMPLEMENTATION.
     aus_attr-type         = type        .
     aus_attr-filter       = filter      .
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method GET_LINE_END_MARKER.
+  METHOD get_line_end_marker.
 
     IF sy-opsys NP 'Windows*'.
       result = cl_abap_char_utilities=>newline.
@@ -124,10 +126,10 @@ CLASS ZCL_IO_BACKEND IMPLEMENTATION.
       ENDIF.
     ENDIF.
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method OPEN.
+  METHOD open.
 
     TYPE-POOLS dset.
     DATA attr TYPE dset_attributes.
@@ -436,5 +438,5 @@ CLASS ZCL_IO_BACKEND IMPLEMENTATION.
     ENDIF.
 
 
-  endmethod.
+  ENDMETHOD.
 ENDCLASS.

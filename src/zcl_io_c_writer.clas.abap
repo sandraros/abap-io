@@ -1,6 +1,7 @@
-"! <p class="shorttext synchronized" lang="en">Character writer</p>
+"! <p class="shorttext synchronized" lang="en">Abstract character writer</p>
 CLASS zcl_io_c_writer DEFINITION
   PUBLIC
+  ABSTRACT
   CREATE PUBLIC .
 
   PUBLIC SECTION.

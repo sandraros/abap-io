@@ -1,51 +1,53 @@
-class ZCL_IO_STRING_X_WRITER definition
-  public
-  inheriting from ZCL_IO_MEMORY_X_WRITER
-  final
-  create public
+"! <p class="shorttext synchronized" lang="en">Byte string writer</p>
+"!
+CLASS zcl_io_string_x_writer DEFINITION
+  PUBLIC
+  INHERITING FROM zcl_io_memory_x_writer
+  FINAL
+  CREATE PUBLIC
 
-  global friends ZCL_IO_X_WRITER .
+  GLOBAL FRIENDS zcl_io_x_writer .
 
-public section.
+  PUBLIC SECTION.
 
-  interfaces ZIF_IO_STRING_WRITER .
+    INTERFACES zif_io_string_writer .
 
-  methods CONSTRUCTOR
-    importing
-      !XSTR type XSTRING optional .
-  methods GET_RESULT_STRING
-    returning
-      value(STR) type XSTRING .
+    METHODS constructor
+      IMPORTING
+        !xstr TYPE xstring OPTIONAL .
+    METHODS get_result_string
+      RETURNING
+        VALUE(str) TYPE xstring .
 
-  methods GET_RESULT
-    redefinition .
-  methods GET_RESULT_TYPE
-    redefinition .
-protected section.
-private section.
+    METHODS get_result
+        REDEFINITION .
+    METHODS get_result_type
+        REDEFINITION .
+  PROTECTED SECTION.
+  PRIVATE SECTION.
 
-  data M_STR type XSTRING .
-  data M_REF_XSTR type ref to XSTRING .
+    DATA m_str TYPE xstring .
+    DATA m_ref_xstr TYPE REF TO xstring .
 
-  methods WRITE_INTERNAL
-    importing
-      !DATA type XSTRING .
+    METHODS write_internal
+      IMPORTING
+        !data TYPE xstring .
 ENDCLASS.
 
 
 
-CLASS ZCL_IO_STRING_X_WRITER IMPLEMENTATION.
+CLASS zcl_io_string_x_writer IMPLEMENTATION.
 
 
-  method CONSTRUCTOR.
+  METHOD constructor.
 
     CALL METHOD super->constructor.
     GET REFERENCE OF xstr INTO m_ref_xstr.
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method GET_RESULT.
+  METHOD get_result.
 
     DATA lo_rtti TYPE REF TO cl_abap_typedescr.
     DATA l_type_kind TYPE string.
@@ -53,30 +55,30 @@ CLASS ZCL_IO_STRING_X_WRITER IMPLEMENTATION.
       lo_rtti = cl_abap_typedescr=>describe_by_data( result ).
       l_type_kind = lo_rtti->type_kind.
       RAISE EXCEPTION TYPE zcx_io_parameter_invalid_type
-            EXPORTING
-              parameter = `RESULT`
-              type = l_type_kind.
+        EXPORTING
+          parameter = `RESULT`
+          type      = l_type_kind.
     ENDIF.
     result = m_str.
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method GET_RESULT_STRING.
+  METHOD get_result_string.
 
     str = m_str.
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method GET_RESULT_TYPE.
+  METHOD get_result_type.
 
     result_type = cl_abap_elemdescr=>get_xstring( ).
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method WRITE_INTERNAL.
+  METHOD write_internal.
 
     IF m_ref_xstr IS BOUND.
       CONCATENATE m_ref_xstr->* data INTO m_ref_xstr->* IN BYTE MODE.
@@ -84,5 +86,5 @@ CLASS ZCL_IO_STRING_X_WRITER IMPLEMENTATION.
       CONCATENATE m_str data INTO m_str IN BYTE MODE.
     ENDIF.
 
-  endmethod.
+  ENDMETHOD.
 ENDCLASS.

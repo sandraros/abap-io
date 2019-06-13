@@ -1,4 +1,4 @@
-"! <p class="shorttext synchronized" lang="en"></p>
+"! <p class="shorttext synchronized" lang="en">Byte string reader</p>
 "!
 CLASS zcl_io_string_x_reader DEFINITION
   PUBLIC

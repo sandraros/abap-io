@@ -1,17 +1,19 @@
-class ZCL_IO_MEMORY_X_READER definition
-  public
-  inheriting from ZCL_IO_X_READER
-  abstract
-  create public .
+"! <p class="shorttext synchronized" lang="en">Abstract data object byte reader</p>
+"!
+CLASS zcl_io_memory_x_reader DEFINITION
+  PUBLIC
+  INHERITING FROM zcl_io_x_reader
+  ABSTRACT
+  CREATE PUBLIC .
 
-public section.
+  PUBLIC SECTION.
 
-  interfaces ZIF_IO_MEMORY_READER .
-protected section.
-private section.
+    INTERFACES zif_io_memory_reader .
+  PROTECTED SECTION.
+  PRIVATE SECTION.
 ENDCLASS.
 
 
 
-CLASS ZCL_IO_MEMORY_X_READER IMPLEMENTATION.
+CLASS zcl_io_memory_x_reader IMPLEMENTATION.
 ENDCLASS.
