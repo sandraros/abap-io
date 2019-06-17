@@ -1,37 +1,44 @@
 "! <p class="shorttext synchronized" lang="en">Character string writer</p>
 "!
-class ZCL_IO_STRING_C_WRITER definition
-  public
-  inheriting from ZCL_IO_MEMORY_C_WRITER
-  final
-  create public
+CLASS zcl_io_string_c_writer DEFINITION
+  PUBLIC
+  INHERITING FROM zcl_io_memory_c_writer
+  FINAL
+  CREATE PUBLIC
 
-  global friends ZCL_IO_C_WRITER .
+  GLOBAL FRIENDS zcl_io_c_writer .
 
-public section.
+  PUBLIC SECTION.
 
-  interfaces ZIF_IO_STRING_WRITER .
+    INTERFACES zif_io_string_writer .
 
-  methods CONSTRUCTOR
-    importing
-      !STR type STRING optional .
-  methods GET_RESULT_STRING
-    returning
-      value(STR) type STRING .
+    METHODS constructor
+      IMPORTING
+        !str TYPE string OPTIONAL .
 
-  methods GET_RESULT
-    redefinition .
-  methods GET_RESULT_TYPE
-    redefinition .
-protected section.
-private section.
+    METHODS bind_result_area
+      CHANGING
+        str TYPE string.
 
-  data M_STR type STRING .
-  data M_REF_STR type ref to STRING .
+    METHODS get_result_string
+      RETURNING
+        VALUE(str) TYPE string .
 
-  methods WRITE_INTERNAL
-    importing
-      !DATA type STRING .
+    METHODS get_result
+        REDEFINITION .
+
+    METHODS get_result_type
+        REDEFINITION .
+
+  PROTECTED SECTION.
+  PRIVATE SECTION.
+
+    DATA m_str TYPE string .
+    DATA m_ref_str TYPE REF TO string .
+
+    METHODS write_internal
+      IMPORTING
+        !data TYPE string .
 ENDCLASS.
 
 
@@ -39,18 +46,26 @@ ENDCLASS.
 CLASS ZCL_IO_STRING_C_WRITER IMPLEMENTATION.
 
 
-  method CONSTRUCTOR.
+  METHOD bind_result_area.
+
+    m_ref_str = REF #( str ).
+
+  ENDMETHOD.
+
+
+  METHOD constructor.
 
     CALL METHOD super->constructor.
     GET REFERENCE OF str INTO m_ref_str.
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method GET_RESULT.
+  METHOD get_result.
 
-    DATA lo_rtti TYPE REF TO cl_abap_typedescr.
-    DATA l_type_kind TYPE string.
+    DATA: lo_rtti     TYPE REF TO cl_abap_typedescr,
+          l_type_kind TYPE string.
+
     IF cl_abap_typedescr=>describe_by_data( result ) <> cl_abap_elemdescr=>get_string( ).
       lo_rtti = cl_abap_typedescr=>describe_by_data( result ).
       l_type_kind = lo_rtti->type_kind.
@@ -61,24 +76,24 @@ CLASS ZCL_IO_STRING_C_WRITER IMPLEMENTATION.
     ENDIF.
     result = m_str.
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method GET_RESULT_STRING.
+  METHOD get_result_string.
 
     str = m_str.
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method GET_RESULT_TYPE.
+  METHOD get_result_type.
 
     result_type = cl_abap_elemdescr=>get_string( ).
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method WRITE_INTERNAL.
+  METHOD write_internal.
 
     IF m_ref_str IS BOUND.
       CONCATENATE m_ref_str->* data INTO m_ref_str->*.
@@ -86,5 +101,5 @@ CLASS ZCL_IO_STRING_C_WRITER IMPLEMENTATION.
       CONCATENATE m_str data INTO m_str.
     ENDIF.
 
-  endmethod.
+  ENDMETHOD.
 ENDCLASS.

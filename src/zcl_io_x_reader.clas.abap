@@ -38,13 +38,12 @@ CLASS zcl_io_x_reader DEFINITION
     METHODS constructor .
   PROTECTED SECTION.
 
-    DATA aov_data_available TYPE abap_bool .
-    DATA aov_closed TYPE abap_bool .
-    DATA:
-      aov_next_byte TYPE x LENGTH 1 .
+*    DATA aov_closed TYPE abap_bool .
+*    DATA:
+*      aov_next_byte TYPE x LENGTH 1 .
   PRIVATE SECTION.
 
-    DATA closed TYPE abap_bool VALUE abap_false ##NO_TEXT.
+    DATA closed TYPE abap_bool.
 ENDCLASS.
 
 
@@ -53,44 +52,56 @@ CLASS zcl_io_x_reader IMPLEMENTATION.
 
 
   METHOD constructor.
-
-    aov_closed = abap_false.
-
+    closed = abap_false.
   ENDMETHOD.
 
 
   METHOD zif_io_close_resource~close.
+    closed = abap_true.
   ENDMETHOD.
 
 
   METHOD zif_io_close_resource~is_closed.
+    closed = me->closed.
   ENDMETHOD.
 
 
   METHOD zif_io_reader~data_available.
-    CALL METHOD me->('DATA_AVAILABLE')
+    IF closed = abap_true.
+      RAISE EXCEPTION TYPE zcx_io_resource_already_closed.
+    ENDIF.
+    CALL METHOD me->('DATA_AVAILABLE_INTERNAL')
       RECEIVING
         available = available.
   ENDMETHOD.
 
 
   METHOD zif_io_reader~delete_mark.
+    IF closed = abap_true.
+      RAISE EXCEPTION TYPE zcx_io_resource_already_closed.
+    ENDIF.
   ENDMETHOD.
 
 
   METHOD zif_io_reader~is_mark_supported.
+    res = abap_true.
   ENDMETHOD.
 
 
   METHOD zif_io_reader~is_reset_supported.
+    result = abap_true.
   ENDMETHOD.
 
 
   METHOD zif_io_reader~is_x_reader.
+    result = abap_true.
   ENDMETHOD.
 
 
   METHOD zif_io_reader~read.
+    IF closed = abap_true.
+      RAISE EXCEPTION TYPE zcx_io_resource_already_closed.
+    ENDIF.
     CALL METHOD me->('READ_INTERNAL')
       EXPORTING
         length = length
@@ -100,22 +111,41 @@ CLASS zcl_io_x_reader IMPLEMENTATION.
 
 
   METHOD zif_io_reader~reset.
+    IF closed = abap_true.
+      RAISE EXCEPTION TYPE zcx_io_resource_already_closed.
+    ENDIF.
   ENDMETHOD.
 
 
   METHOD zif_io_reader~reset_to_mark.
+    IF closed = abap_true.
+      RAISE EXCEPTION TYPE zcx_io_resource_already_closed.
+    ENDIF.
   ENDMETHOD.
 
 
   METHOD zif_io_reader~set_mark.
+    IF closed = abap_true.
+      RAISE EXCEPTION TYPE zcx_io_resource_already_closed.
+    ENDIF.
   ENDMETHOD.
 
 
   METHOD zif_io_reader~skip.
+    IF closed = abap_true.
+      RAISE EXCEPTION TYPE zcx_io_resource_already_closed.
+    ENDIF.
+    read( length ).
   ENDMETHOD.
 
 
   METHOD zif_io_x_reader~read.
+    IF length <= 0.
+      RAISE EXCEPTION TYPE zcx_io_parameter_invalid_range EXPORTING parameter = 'LENGTH' value = CONV #( length ).
+    ENDIF.
+    IF closed = abap_true.
+      RAISE EXCEPTION TYPE zcx_io_resource_already_closed.
+    ENDIF.
     CALL METHOD me->('READ_INTERNAL')
       EXPORTING
         length = length

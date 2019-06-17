@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_IO_STRING_C_READER</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>String reader</DESCRIPT>
+    <DESCRIPT>Character string reader</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

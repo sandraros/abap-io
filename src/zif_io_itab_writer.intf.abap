@@ -1,21 +1,30 @@
-interface ZIF_IO_ITAB_WRITER
-  public .
+"! <p class="shorttext synchronized" lang="en">Internal table writer</p>
+"!
+INTERFACE zif_io_itab_writer
+  PUBLIC .
 
 
-  interfaces ZIF_IO_CLOSE_RESOURCE .
-  interfaces ZIF_IO_MEMORY_WRITER .
-  interfaces ZIF_IO_WRITER .
+  INTERFACES zif_io_close_resource .
+  INTERFACES zif_io_memory_writer .
+  INTERFACES zif_io_writer .
 
-  aliases GET_RESULT
-    for ZIF_IO_MEMORY_WRITER~GET_RESULT .
-  aliases GET_RESULT_TYPE
-    for ZIF_IO_MEMORY_WRITER~GET_RESULT_TYPE .
+  ALIASES get_result
+    FOR zif_io_memory_writer~get_result .
+  ALIASES get_result_type
+    FOR zif_io_memory_writer~get_result_type .
 
-  methods GET_RESULT_TABLE
-    exporting
-      !TABLE type STANDARD TABLE
-      !LENGTH_OF_LAST_LINE type I .
-  methods GET_MAX_LINE_LENGTH
-    exporting
-      !LINE_LENGTH type I .
-endinterface.
+  METHODS bind_result_area
+    CHANGING
+      table  TYPE STANDARD TABLE
+      length TYPE i DEFAULT -1.
+
+  METHODS get_result_table
+    EXPORTING
+      !table               TYPE STANDARD TABLE
+      !length_of_last_line TYPE i
+      !length              TYPE i .
+
+  METHODS get_max_line_length
+    EXPORTING
+      !line_length TYPE i .
+ENDINTERFACE.

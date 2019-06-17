@@ -15,10 +15,12 @@ CLASS zcl_io_string_x_writer DEFINITION
     METHODS constructor
       IMPORTING
         !xstr TYPE xstring OPTIONAL .
+    METHODS bind_result_area
+      CHANGING
+        str TYPE xstring.
     METHODS get_result_string
       RETURNING
         VALUE(str) TYPE xstring .
-
     METHODS get_result
         REDEFINITION .
     METHODS get_result_type
@@ -87,4 +89,11 @@ CLASS zcl_io_string_x_writer IMPLEMENTATION.
     ENDIF.
 
   ENDMETHOD.
+
+  METHOD bind_result_area.
+
+    m_ref_xstr = REF #( str ).
+
+  ENDMETHOD.
+
 ENDCLASS.

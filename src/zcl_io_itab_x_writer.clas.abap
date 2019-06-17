@@ -16,6 +16,8 @@ CLASS zcl_io_itab_x_writer DEFINITION
 
     ALIASES get_max_line_length
       FOR zif_io_itab_writer~get_max_line_length .
+    ALIASES bind_result_area
+      FOR zif_io_itab_writer~bind_result_area.
     ALIASES get_result_table
       FOR zif_io_itab_writer~get_result_table .
 
@@ -48,7 +50,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_IO_ITAB_X_WRITER IMPLEMENTATION.
+CLASS zcl_io_itab_x_writer IMPLEMENTATION.
 
 
   METHOD constructor.
@@ -127,4 +129,11 @@ CLASS ZCL_IO_ITAB_X_WRITER IMPLEMENTATION.
     result_type ?= cl_abap_typedescr=>describe_by_data_ref( m_table ).
 
   ENDMETHOD.
+
+  METHOD zif_io_itab_writer~bind_result_area.
+
+    m_table = REF #( table ).
+
+  ENDMETHOD.
+
 ENDCLASS.

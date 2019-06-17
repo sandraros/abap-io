@@ -1,4 +1,4 @@
-"! <p class="shorttext synchronized" lang="en"></p>
+"! <p class="shorttext synchronized" lang="en">Utilities</p>
 "!
 CLASS zcl_io_utilities DEFINITION
   PUBLIC

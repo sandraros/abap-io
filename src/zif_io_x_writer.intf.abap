@@ -1,19 +1,22 @@
-interface ZIF_IO_X_WRITER
-  public .
+"! <p class="shorttext synchronized" lang="en">Byte writer</p>
+"!
+INTERFACE zif_io_x_writer
+  PUBLIC .
 
 
-  interfaces ZIF_IO_CLOSE_RESOURCE .
-  interfaces ZIF_IO_WRITER .
+  INTERFACES zif_io_close_resource .
+  INTERFACES zif_io_writer .
 
-  aliases CLOSE
-    for ZIF_IO_WRITER~CLOSE .
-  aliases IS_CLOSED
-    for ZIF_IO_WRITER~IS_CLOSED .
+  ALIASES close
+    FOR zif_io_writer~close .
+  ALIASES is_closed
+    FOR zif_io_writer~is_closed .
 
-  methods WRITE
-    importing
-      !DATA type XSTRING
-    raising
-      ZCX_IO_RESOURCE_ALREADY_CLOSED
-      ZCX_IO_STREAM_ERROR .
-endinterface.
+  METHODS write
+    IMPORTING
+      !data TYPE xstring
+    RAISING
+      zcx_io_resource_already_closed
+      zcx_io_stream_error .
+
+ENDINTERFACE.

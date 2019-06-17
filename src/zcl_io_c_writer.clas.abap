@@ -37,8 +37,6 @@ CLASS zcl_io_c_writer IMPLEMENTATION.
 
 
   METHOD constructor.
-
-
   ENDMETHOD.
 
 
@@ -62,6 +60,7 @@ CLASS zcl_io_c_writer IMPLEMENTATION.
 
 
   METHOD zif_io_writer~is_x_writer.
+    result = abap_false.
   ENDMETHOD.
 
 
@@ -69,18 +68,5 @@ CLASS zcl_io_c_writer IMPLEMENTATION.
     CALL METHOD me->('WRITE_INTERNAL')
       EXPORTING
         data = data.
-*    DATA type TYPE REF TO cl_abap_typedescr.
-*    DATA l_name TYPE string.
-*    type = cl_abap_typedescr=>describe_by_data( data ).
-*    IF type = cl_abap_elemdescr=>get_string( ).
-*      write( data ).
-*    ELSE.
-*      l_name = type->get_relative_name( ).
-*      RAISE EXCEPTION TYPE zcx_io_parameter_invalid_type
-*        EXPORTING
-*          textid    = zcx_io_parameter_invalid_type=>zcx_io_parameter_invalid_type
-*          parameter = `DATA`
-*          type      = l_name.
-*    ENDIF.
   ENDMETHOD.
 ENDCLASS.

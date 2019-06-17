@@ -16,6 +16,8 @@ public section.
 
   aliases GET_MAX_LINE_LENGTH
     for ZIF_IO_ITAB_WRITER~GET_MAX_LINE_LENGTH .
+  aliases bind_result_area
+    for zif_io_itab_writer~bind_result_area.
   aliases GET_RESULT_TABLE
     for ZIF_IO_ITAB_WRITER~GET_RESULT_TABLE .
 
@@ -102,6 +104,7 @@ CLASS ZCL_IO_ITAB_C_WRITER IMPLEMENTATION.
   method ZIF_IO_ITAB_WRITER~GET_RESULT_TABLE.
 
     FIELD-SYMBOLS <table> TYPE STANDARD TABLE.
+
     ASSIGN m_table->* TO <table>.
     ASSERT sy-subrc = 0.
     table = <table>.
@@ -113,6 +116,7 @@ CLASS ZCL_IO_ITAB_C_WRITER IMPLEMENTATION.
   method ZIF_IO_MEMORY_WRITER~GET_RESULT.
 
     FIELD-SYMBOLS <table> TYPE STANDARD TABLE.
+
     ASSIGN m_table->* TO <table>.
     ASSERT sy-subrc = 0.
     result = <table>.
@@ -126,4 +130,11 @@ CLASS ZCL_IO_ITAB_C_WRITER IMPLEMENTATION.
     result_type ?= cl_abap_typedescr=>describe_by_data_ref( m_table ).
 
   endmethod.
+
+  METHOD ZIF_IO_ITAB_WRITER~BIND_RESULT_AREA.
+
+    m_table = ref #( table ).
+
+  ENDMETHOD.
+
 ENDCLASS.

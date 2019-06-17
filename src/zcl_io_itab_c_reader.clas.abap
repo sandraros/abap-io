@@ -1,58 +1,88 @@
 "! <p class="shorttext synchronized" lang="en">Internal table character reader</p>
-class ZCL_IO_ITAB_C_READER definition
-  public
-  inheriting from ZCL_IO_MEMORY_C_READER
-  create public
+CLASS zcl_io_itab_c_reader DEFINITION
+  PUBLIC
+  INHERITING FROM zcl_io_memory_c_reader
+  CREATE PUBLIC
 
-  global friends ZCL_IO_C_READER .
+  GLOBAL FRIENDS zcl_io_c_reader .
 
-public section.
-  type-pools ABAP .
+  PUBLIC SECTION.
+    TYPE-POOLS abap .
 
-  interfaces ZIF_IO_ITAB_READER .
+    INTERFACES zif_io_itab_reader .
 
-  methods CONSTRUCTOR
-    importing
-      !ITAB type STANDARD TABLE
-    raising
-      ZCX_IO_PARAMETER_INVALID_TYPE .
+    METHODS constructor
+      IMPORTING
+        !itab   TYPE STANDARD TABLE
+        !length TYPE i DEFAULT -1
+      RAISING
+        zcx_io_parameter_invalid_type .
 
-protected section.
-private section.
+    METHODS zif_io_reader~delete_mark
+        REDEFINITION .
+    METHODS zif_io_reader~is_mark_supported
+        REDEFINITION .
+    METHODS zif_io_reader~is_reset_supported
+        REDEFINITION .
+    METHODS zif_io_reader~reset
+        REDEFINITION .
+    METHODS zif_io_reader~reset_to_mark
+        REDEFINITION .
+    METHODS zif_io_reader~set_mark
+        REDEFINITION .
 
-  data M_ITAB type ref to DATA .
-  data M_LINE_INDEX type I value 1 ##NO_TEXT.
-  data M_POSITION type I value 0 ##NO_TEXT.
-  data M_LINE_INDEX_MARK type I value 0 ##NO_TEXT.
-  data M_POS_MARK type I value -1 ##NO_TEXT.
-  data M_LINE_TYPE type ref to CL_ABAP_DATADESCR .
-  data M_DATA_AVAILABLE type ABAP_BOOL value ABAP_TRUE ##NO_TEXT.
-  data M_LINE_TYPE_IS_STRING type ABAP_BOOL .
-  data M_LINE_LENGTH type I .
+  PROTECTED SECTION.
+  PRIVATE SECTION.
 
-  methods DATA_AVAILABLE_INTERNAL
-    returning
-      value(AVAILABLE) type ABAP_BOOL .
-  methods READ_INTERNAL
-    importing
-      value(LENGTH) type ABAP_MSIZE
-    returning
-      value(RESULT) type STRING .
-  methods FIND_FIRST .
+    DATA: m_itab                TYPE REF TO data,
+          "! Length of stream (-1 = whole ITAB)
+          m_length              TYPE i,
+          "! Current line of stream (position)
+          m_line_index          TYPE i VALUE 1,
+          "! Offset in current line of stream (position)
+          m_position            TYPE i VALUE 0,
+          "! Offset in stream (position)
+          m_global_position     TYPE i VALUE 0,
+          m_line_index_mark     TYPE i VALUE 0,
+          m_pos_mark            TYPE i VALUE -1,
+          m_global_pos_mark     TYPE i VALUE -1,
+          m_line_type           TYPE REF TO cl_abap_datadescr,
+          m_data_available      TYPE abap_bool VALUE abap_true,
+          m_data_available_mark TYPE abap_bool,
+          m_line_type_is_string TYPE abap_bool,
+          "! If internal table has lines of type C, length of lines (0 for lines of type String)
+          m_line_length         TYPE i.
+
+    METHODS data_available_internal
+      RETURNING
+        VALUE(available) TYPE abap_bool .
+
+    METHODS read_internal
+      IMPORTING
+        VALUE(length) TYPE abap_msize
+      RETURNING
+        VALUE(result) TYPE string .
+
+    "! Determines whether the stream is empty for DATA_AVAILABLE
+    METHODS find_first .
+
 ENDCLASS.
 
 
 
-CLASS ZCL_IO_ITAB_C_READER IMPLEMENTATION.
+CLASS zcl_io_itab_c_reader IMPLEMENTATION.
 
 
-  method CONSTRUCTOR.
+  METHOD constructor.
 
     FIELD-SYMBOLS <input> TYPE STANDARD TABLE.
-    DATA itab_desc TYPE REF TO cl_abap_tabledescr .
-    DATA l_name TYPE string.
+    DATA: itab_desc TYPE REF TO cl_abap_tabledescr,
+          l_name    TYPE string.
 
     super->constructor( ).
+    m_itab = REF #( itab ).
+    m_length = nmax( val1 = length val2 = -1 ).
+
     " Check type
     itab_desc ?= cl_abap_typedescr=>describe_by_data( itab ).
     m_line_type = itab_desc->get_table_line_type( ).
@@ -65,31 +95,35 @@ CLASS ZCL_IO_ITAB_C_READER IMPLEMENTATION.
           parameter = `ITAB`
           type      = l_name.
     ENDIF.
+
     IF m_line_type->type_kind = cl_abap_typedescr=>typekind_string.
       m_line_type_is_string = abap_true.
     ELSE.
-      m_line_length = m_line_type->length.
+      m_line_length = m_line_type->length / cl_abap_char_utilities=>charsize.
     ENDIF.
-    CREATE DATA m_itab LIKE itab.
-    ASSIGN m_itab->* TO <input> CASTING LIKE itab.
-    <input> = itab.
+*    CREATE DATA m_itab LIKE itab.
+*    ASSIGN m_itab->* TO <input> CASTING LIKE itab.
+*    <input> = itab.
     find_first( ).
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method DATA_AVAILABLE_INTERNAL.
-
+  METHOD data_available_internal.
     available = m_data_available.
+  ENDMETHOD.
 
-  endmethod.
 
-
-  method FIND_FIRST.
-
+  METHOD find_first.
     FIELD-SYMBOLS: <input> TYPE STANDARD TABLE,
-                   <line> TYPE csequence.
+                   <line>  TYPE csequence.
     DATA line TYPE REF TO data.
+
+    IF m_length = 0.
+      m_data_available = abap_false.
+      RETURN.
+    ENDIF.
+
     ASSIGN m_itab->* TO <input>.
     DO.
       READ TABLE <input> INDEX m_line_index REFERENCE INTO line.
@@ -97,24 +131,29 @@ CLASS ZCL_IO_ITAB_C_READER IMPLEMENTATION.
         m_data_available = abap_false.
         RETURN.
       ENDIF.
-      ASSIGN line->* TO <line> CASTING TYPE HANDLE m_line_type.
-      IF <line> IS NOT INITIAL.
+      IF m_line_type_is_string = abap_false.
         EXIT.
+      ELSE.
+        ASSIGN line->* TO <line> CASTING TYPE HANDLE m_line_type.
+        IF <line> IS NOT INITIAL.
+          EXIT.
+        ENDIF.
       ENDIF.
       m_line_index = m_line_index + 1.
     ENDDO.
+  ENDMETHOD.
 
-  endmethod.
 
-
-  method READ_INTERNAL.
- "BY KERNEL MODULE ab_km_ItabCReadInternal.
+  METHOD read_internal.
+    "BY KERNEL MODULE ab_km_ItabCReadInternal.
     FIELD-SYMBOLS: <input> TYPE STANDARD TABLE,
-                   <line> TYPE csequence.
-    DATA line TYPE REF TO data.
-    DATA l_take TYPE i.
-    DATA l_remain_eol TYPE i.
-    DATA l_remain TYPE i.
+                   <line>  TYPE csequence.
+    DATA: line         TYPE REF TO data,
+          l_take       TYPE i,
+          "! Number of characters left in the current line, after the current offset (m_position)
+          l_remain_eol TYPE i,
+          "! Number of characters left to be taken from the stream (counter)
+          l_remain     TYPE i.
 
     IF abap_true = data_available_internal( ) AND length > 0.
       l_remain = length.
@@ -125,37 +164,99 @@ CLASS ZCL_IO_ITAB_C_READER IMPLEMENTATION.
           m_data_available = abap_false.
           EXIT.
         ENDIF.
+
         ASSIGN line->* TO <line> CASTING TYPE HANDLE m_line_type.
         IF m_line_type_is_string = abap_true.
-          l_remain_eol = STRLEN( <line> ) - m_position.
+          l_remain_eol = strlen( <line> ) - m_position.
         ELSE.
           l_remain_eol = m_line_length - m_position.
+        ENDIF.
+        IF m_length <> -1.
+          DATA(l_remain_eos) = m_length - m_global_position.
+          l_remain_eol = nmin( val1 = l_remain_eol val2 = l_remain_eos ).
         ENDIF.
         IF l_remain_eol > l_remain.
           l_take = l_remain.
         ELSE.
           l_take = l_remain_eol.
         ENDIF.
+
         IF l_take > 0.
+          " (note: l_take may be 0 with tables of type String, if a line = empty String)
           CONCATENATE result <line>+m_position(l_take) INTO result.
+        ENDIF.
 
-          IF l_take = l_remain_eol.
-            ADD 1 TO m_line_index.
-            m_position = 0.
-          ELSE.
-            ADD l_take TO m_position.
-          ENDIF.
+        IF l_take = l_remain_eol.
+          " end of line
+          ADD 1 TO m_line_index.
+          m_position = 0.
+        ELSE.
+          ADD l_take TO m_position.
+        ENDIF.
+        ADD l_take TO m_global_position.
 
-          SUBTRACT l_take FROM l_remain.
-          IF l_remain = 0.
-            EXIT.
+        SUBTRACT l_take FROM l_remain.
+        IF l_remain = 0.
+          " The requested number of characters have been extracted
+          IF m_line_index > lines( <input> ).
+            m_data_available = abap_false.
           ENDIF.
+          EXIT.
         ENDIF.
       ENDDO.
     ENDIF.
 
-  endmethod.
+  ENDMETHOD.
 
+  METHOD zif_io_reader~delete_mark.
+    IF is_closed( ) = abap_true.
+      RAISE EXCEPTION TYPE zcx_io_resource_already_closed.
+    ENDIF.
+    m_line_index_mark = 0.
+    m_pos_mark = -1.
+  ENDMETHOD.
 
+  METHOD zif_io_reader~is_mark_supported.
+    res = abap_true.
+  ENDMETHOD.
+
+  METHOD zif_io_reader~is_reset_supported.
+    result = abap_true.
+  ENDMETHOD.
+
+  METHOD zif_io_reader~reset.
+    IF is_closed( ) = abap_true.
+      RAISE EXCEPTION TYPE zcx_io_resource_already_closed.
+    ENDIF.
+    m_line_index = 1.
+    m_position = 0.
+    m_global_position = 0.
+    m_line_index_mark = 0.
+    m_pos_mark = -1.
+    find_first( ).
+  ENDMETHOD.
+
+  METHOD zif_io_reader~reset_to_mark.
+    IF is_closed( ) = abap_true.
+      RAISE EXCEPTION TYPE zcx_io_resource_already_closed.
+    ENDIF.
+    IF m_pos_mark = -1.
+      RAISE EXCEPTION TYPE zcx_io_stream_position_error EXPORTING textid = zcx_io_stream_position_error=>zcx_io_mark_not_set.
+    ENDIF.
+    m_line_index = m_line_index_mark.
+    m_position = m_pos_mark.
+    m_global_position = m_pos_mark.
+    m_data_available = m_data_available_mark.
+  ENDMETHOD.
+
+  METHOD zif_io_reader~set_mark.
+    IF is_closed( ) = abap_true.
+      RAISE EXCEPTION TYPE zcx_io_resource_already_closed.
+    ENDIF.
+    m_line_index_mark = m_line_index.
+    m_pos_mark = m_position.
+    m_global_pos_mark = m_global_position.
+    m_data_available_mark = m_data_available.
+  ENDMETHOD.
 
 ENDCLASS.

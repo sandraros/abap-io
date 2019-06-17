@@ -1,34 +1,35 @@
-class ZCL_IO_BACKEND_C_WRITER definition
-  public
-  inheriting from ZCL_IO_FILE_C_WRITER
-  create public
+"! <p class="shorttext synchronized" lang="en">Back-end file character writer</p>
+CLASS zcl_io_backend_c_writer DEFINITION
+  PUBLIC
+  INHERITING FROM zcl_io_file_c_writer
+  CREATE PUBLIC
 
-  global friends ZCL_IO_C_WRITER .
+  GLOBAL FRIENDS zcl_io_c_writer .
 
-public section.
+  PUBLIC SECTION.
 
-  interfaces ZIF_IO_BACKEND_WRITER .
+    INTERFACES zif_io_backend_writer .
 
-  methods CONSTRUCTOR
-    importing
-      !IO_FILE type ref to ZCL_IO_BACKEND
-    raising
-      ZCX_IO_PARAMETER_INVALID .
-  methods WRITE_INTERNAL
-    importing
-      !DATA type STRING .
-protected section.
-private section.
+    METHODS constructor
+      IMPORTING
+        !io_file TYPE REF TO zcl_io_backend
+      RAISING
+        zcx_io_parameter_invalid .
+    METHODS write_internal
+      IMPORTING
+        !data TYPE string .
+  PROTECTED SECTION.
+  PRIVATE SECTION.
 
-  data AIO_FILE type ref to ZCL_IO_BACKEND .
+    DATA aio_file TYPE REF TO zcl_io_backend .
 ENDCLASS.
 
 
 
-CLASS ZCL_IO_BACKEND_C_WRITER IMPLEMENTATION.
+CLASS zcl_io_backend_c_writer IMPLEMENTATION.
 
 
-  method CONSTRUCTOR.
+  METHOD constructor.
 
     DATA ls_attr TYPE dset_attributes.
 
@@ -55,17 +56,17 @@ CLASS ZCL_IO_BACKEND_C_WRITER IMPLEMENTATION.
               AND ls_attr-fixed-mode = dset_legacy_binary_mode.
         ELSE.
           RAISE EXCEPTION TYPE zcx_io_parameter_invalid
-           EXPORTING
-             parameter = `IO_FILE`.
+            EXPORTING
+              parameter = `IO_FILE`.
         ENDIF.
     ENDCASE.
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method WRITE_INTERNAL.
+  METHOD write_internal.
 
     TRANSFER data TO aio_file->filename NO END OF LINE.
 
-  endmethod.
+  ENDMETHOD.
 ENDCLASS.

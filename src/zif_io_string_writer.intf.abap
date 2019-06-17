@@ -1,13 +1,15 @@
-interface ZIF_IO_STRING_WRITER
-  public .
+"! <p class="shorttext synchronized" lang="en">String writer</p>
+"!
+INTERFACE zif_io_string_writer
+  PUBLIC .
 
 
-  interfaces ZIF_IO_CLOSE_RESOURCE .
-  interfaces ZIF_IO_MEMORY_WRITER .
-  interfaces ZIF_IO_WRITER .
+  INTERFACES zif_io_close_resource .
+  INTERFACES zif_io_memory_writer .
+  INTERFACES zif_io_writer .
 
-  aliases GET_RESULT
-    for ZIF_IO_MEMORY_WRITER~GET_RESULT .
-  aliases GET_RESULT_TYPE
-    for ZIF_IO_MEMORY_WRITER~GET_RESULT_TYPE .
-endinterface.
+  ALIASES get_result
+    FOR zif_io_memory_writer~get_result .
+  ALIASES get_result_type
+    FOR zif_io_memory_writer~get_result_type .
+ENDINTERFACE.

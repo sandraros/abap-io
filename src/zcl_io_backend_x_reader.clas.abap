@@ -1,55 +1,57 @@
-class ZCL_IO_BACKEND_X_READER definition
-  public
-  inheriting from ZCL_IO_FILE_X_READER
-  create public
+"! <p class="shorttext synchronized" lang="en">Back-end file byte reader</p>
+"!
+CLASS zcl_io_backend_x_reader DEFINITION
+  PUBLIC
+  INHERITING FROM zcl_io_file_x_reader
+  CREATE PUBLIC
 
-  global friends ZCL_IO_X_READER .
+  GLOBAL FRIENDS zcl_io_x_reader .
 
-public section.
+  PUBLIC SECTION.
 
-  interfaces ZIF_IO_BACKEND_READER .
+    INTERFACES zif_io_backend_reader .
 
-  methods CONSTRUCTOR
-    importing
-      !IO_FILE type ref to ZCL_IO_BACKEND
-    raising
-      ZCX_IO_PARAMETER_INVALID .
+    METHODS constructor
+      IMPORTING
+        !io_file TYPE REF TO zcl_io_backend
+      RAISING
+        zcx_io_parameter_invalid .
 
-  methods DELETE_MARK
-    redefinition .
-  methods IS_MARK_SUPPORTED
-    redefinition .
-  methods IS_RESET_SUPPORTED
-    redefinition .
-  methods RESET
-    redefinition .
-  methods RESET_TO_MARK
-    redefinition .
-  methods SET_MARK
-    redefinition .
-protected section.
-private section.
+    METHODS delete_mark
+        REDEFINITION .
+    METHODS is_mark_supported
+        REDEFINITION .
+    METHODS is_reset_supported
+        REDEFINITION .
+    METHODS reset
+        REDEFINITION .
+    METHODS reset_to_mark
+        REDEFINITION .
+    METHODS set_mark
+        REDEFINITION .
+  PROTECTED SECTION.
+  PRIVATE SECTION.
 
-  data AIO_FILE type ref to ZCL_IO_BACKEND .
-  data M_MARK type ABAP_MSIZE value -1 ##NO_TEXT.
-  data M_POSITION type ABAP_MSIZE value 0 ##NO_TEXT.
+    DATA aio_file TYPE REF TO zcl_io_backend .
+    DATA m_mark TYPE abap_msize VALUE -1 ##NO_TEXT.
+    DATA m_position TYPE abap_msize VALUE 0 ##NO_TEXT.
 
-  methods DATA_AVAILABLE_INTERNAL
-    returning
-      value(AVAILABLE) type ABAP_BOOL .
-  methods READ_INTERNAL
-    importing
-      value(LENGTH) type ABAP_MSIZE
-    returning
-      value(RESULT) type XSTRING .
+    METHODS data_available_internal
+      RETURNING
+        VALUE(available) TYPE abap_bool .
+    METHODS read_internal
+      IMPORTING
+        VALUE(length) TYPE abap_msize
+      RETURNING
+        VALUE(result) TYPE xstring .
 ENDCLASS.
 
 
 
-CLASS ZCL_IO_BACKEND_X_READER IMPLEMENTATION.
+CLASS zcl_io_backend_x_reader IMPLEMENTATION.
 
 
-  method CONSTRUCTOR.
+  METHOD constructor.
 
     DATA ls_attr TYPE dset_attributes.
     DATA lx_root TYPE REF TO cx_root.
@@ -61,9 +63,9 @@ CLASS ZCL_IO_BACKEND_X_READER IMPLEMENTATION.
         GET DATASET io_file->filename ATTRIBUTES ls_attr.
       CATCH cx_root INTO lx_root.
         RAISE EXCEPTION TYPE zcx_io_parameter_invalid
-         EXPORTING
-           previous  = lx_root
-           parameter = `IO_FILE`.
+          EXPORTING
+            previous  = lx_root
+            parameter = `IO_FILE`.
     ENDTRY.
     CASE ls_attr-fixed-access_type.
       WHEN dset_input
@@ -71,8 +73,8 @@ CLASS ZCL_IO_BACKEND_X_READER IMPLEMENTATION.
         OR dset_update.
       WHEN OTHERS.
         RAISE EXCEPTION TYPE zcx_io_parameter_invalid
-         EXPORTING
-           parameter = `IO_FILE`.
+          EXPORTING
+            parameter = `IO_FILE`.
     ENDCASE.
     CASE ls_attr-fixed-mode.
       WHEN dset_binary_mode
@@ -82,46 +84,46 @@ CLASS ZCL_IO_BACKEND_X_READER IMPLEMENTATION.
         IF abap_false = zcl_io_program=>is_unicode_program( sy-repid ) AND ls_attr-fixed-mode = dset_legacy_text_mode.
         ELSE.
           RAISE EXCEPTION TYPE zcx_io_parameter_invalid
-           EXPORTING
-             parameter = `IO_FILE`.
+            EXPORTING
+              parameter = `IO_FILE`.
         ENDIF.
     ENDCASE.
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method DATA_AVAILABLE_INTERNAL.
+  METHOD data_available_internal.
 
     available = abap_true. "TODO
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method DELETE_MARK.
+  METHOD delete_mark.
 
     IF is_closed( ) = abap_true.
       RAISE EXCEPTION TYPE zcx_io_resource_already_closed.
     ENDIF.
     m_mark = -1.
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method IS_MARK_SUPPORTED.
+  METHOD is_mark_supported.
 
     res = abap_true.
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method IS_RESET_SUPPORTED.
+  METHOD is_reset_supported.
 
     result = abap_true.
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method READ_INTERNAL.
+  METHOD read_internal.
 
     IF is_closed( ) = abap_true.
       RAISE EXCEPTION TYPE zcx_io_resource_already_closed.
@@ -132,20 +134,20 @@ CLASS ZCL_IO_BACKEND_X_READER IMPLEMENTATION.
 *  set dataset aio_file->filename POSITION l_pos.
     READ DATASET aio_file->filename INTO result MAXIMUM LENGTH length.
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method RESET.
+  METHOD reset.
 
     IF is_closed( ) = abap_true.
       RAISE EXCEPTION TYPE zcx_io_resource_already_closed.
     ENDIF.
     SET DATASET aio_file->filename POSITION zcl_io_backend=>cs_position-begin_of_file.
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method RESET_TO_MARK.
+  METHOD reset_to_mark.
 
     IF is_closed( ) = abap_true.
       RAISE EXCEPTION TYPE zcx_io_resource_already_closed.
@@ -157,15 +159,15 @@ CLASS ZCL_IO_BACKEND_X_READER IMPLEMENTATION.
     ENDIF.
     SET DATASET aio_file->filename POSITION m_mark.
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method SET_MARK.
+  METHOD set_mark.
 
     IF is_closed( ) = abap_true.
       RAISE EXCEPTION TYPE zcx_io_resource_already_closed.
     ENDIF.
     GET DATASET aio_file->filename POSITION m_mark.
 
-  endmethod.
+  ENDMETHOD.
 ENDCLASS.

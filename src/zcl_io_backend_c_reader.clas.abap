@@ -1,4 +1,4 @@
-"! <p class="shorttext synchronized" lang="en">Back-end file input stream</p>
+"! <p class="shorttext synchronized" lang="en">back-end file character reader</p>
 CLASS zcl_io_backend_c_reader DEFINITION
   PUBLIC
   INHERITING FROM zcl_io_file_c_reader
@@ -16,17 +16,17 @@ CLASS zcl_io_backend_c_reader DEFINITION
       RAISING
         zcx_io_parameter_invalid .
 
-    METHODS delete_mark
+    METHODS zif_io_reader~delete_mark
         REDEFINITION .
-    METHODS is_mark_supported
+    METHODS zif_io_reader~is_mark_supported
         REDEFINITION .
-    METHODS is_reset_supported
+    METHODS zif_io_reader~is_reset_supported
         REDEFINITION .
-    METHODS reset
+    METHODS zif_io_reader~reset
         REDEFINITION .
-    METHODS reset_to_mark
+    METHODS zif_io_reader~reset_to_mark
         REDEFINITION .
-    METHODS set_mark
+    METHODS zif_io_reader~set_mark
         REDEFINITION .
   PROTECTED SECTION.
   PRIVATE SECTION.
@@ -100,7 +100,7 @@ CLASS zcl_io_backend_c_reader IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD delete_mark.
+  METHOD zif_io_reader~delete_mark.
 
     IF is_closed( ) = abap_true.
       RAISE EXCEPTION TYPE zcx_io_resource_already_closed.
@@ -110,14 +110,14 @@ CLASS zcl_io_backend_c_reader IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD is_mark_supported.
+  METHOD zif_io_reader~is_mark_supported.
 
     res = abap_true.
 
   ENDMETHOD.
 
 
-  METHOD is_reset_supported.
+  METHOD zif_io_reader~is_reset_supported.
 
     result = abap_true.
 
@@ -135,7 +135,7 @@ CLASS zcl_io_backend_c_reader IMPLEMENTATION.
     DATA len TYPE i.
     DATA l_subrc TYPE sysubrc.
 
-" réserver l'espace (performance)
+    " réserver l'espace (performance)
     CLEAR result.
     SHIFT result RIGHT BY length PLACES.
 
@@ -177,21 +177,21 @@ CLASS zcl_io_backend_c_reader IMPLEMENTATION.
         EXIT. "on a atteint le nombre de caractÃ¨res demandÃ©
       ENDIF.
 
-* ajout du caractÃ¨re de fin de ligne
-* note: inutile de se complexifier la vie avec CRLF car Windows considÃ¨re un
-* LF simple tout de mÃªme comme un retour chariot!
+" ajout character de fin de ligne
+" note: inutile de se complexifier la vie avec CRLF car Windows considÃ¨re un
+" LF simple tout de mÃªme comme un retour chariot!
       REPLACE SECTION OFFSET off LENGTH 1 OF result
             WITH cl_abap_char_utilities=>newline IN CHARACTER MODE.
       ADD 1 TO off.
-* calculer le nombre de caractÃ¨res restant Ã  lire
+" calculer le nombre de caractÃ¨res restant Ã  lire
       SUBTRACT 1 FROM l_length.
       SUBTRACT l_characters FROM l_length.
 
     ENDDO.
 
-* couper les caractÃ¨res initialement rÃ©servÃ©s, mais non alimentÃ©s
-* (note: il ne faut pas supprimer les espaces Ã  la fin, on risquerait
-* de supprimer ceux qui ont rÃ©ellement Ã©tÃ© lus)
+" couper les caractÃ¨res initialement rÃ©servÃ©s, mais non alimentÃ©s
+" (note: il ne faut pas supprimer les espaces Ã  la fin, on risquerait
+" de supprimer ceux qui ont rÃ©ellement Ã©tÃ© lus)
     len = length - off.
     IF len > 0.
       REPLACE SECTION OFFSET off LENGTH len OF result WITH `` IN CHARACTER MODE.
@@ -200,7 +200,7 @@ CLASS zcl_io_backend_c_reader IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD reset.
+  METHOD zif_io_reader~reset.
 
     IF is_closed( ) = abap_true.
       RAISE EXCEPTION TYPE zcx_io_resource_already_closed.
@@ -211,7 +211,7 @@ CLASS zcl_io_backend_c_reader IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD reset_to_mark.
+  METHOD zif_io_reader~reset_to_mark.
 
     IF is_closed( ) = abap_true.
       RAISE EXCEPTION TYPE zcx_io_resource_already_closed.
@@ -227,7 +227,7 @@ CLASS zcl_io_backend_c_reader IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD set_mark.
+  METHOD zif_io_reader~set_mark.
 
     IF is_closed( ) = abap_true.
       RAISE EXCEPTION TYPE zcx_io_resource_already_closed.

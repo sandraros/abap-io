@@ -1,4 +1,4 @@
-"! <p class="shorttext synchronized" lang="en">String reader</p>
+"! <p class="shorttext synchronized" lang="en">Character string reader</p>
 CLASS zcl_io_string_c_reader DEFINITION
   PUBLIC
   INHERITING FROM zcl_io_memory_c_reader

@@ -1,4 +1,4 @@
-"! <p class="shorttext synchronized" lang="en">Write characters</p>
+"! <p class="shorttext synchronized" lang="en">Character writer</p>
 INTERFACE zif_io_c_writer
   PUBLIC .
 
@@ -17,7 +17,7 @@ INTERFACE zif_io_c_writer
 
   METHODS write
     IMPORTING
-      !data TYPE clike
+      !data TYPE string
     RAISING
       zcx_io_resource_already_closed
       zcx_io_stream_error .

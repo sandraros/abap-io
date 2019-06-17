@@ -1,17 +1,23 @@
-interface ZIF_IO_MEMORY_WRITER
-  public .
+"! <p class="shorttext synchronized" lang="en">Memory writer</p>
+"!
+INTERFACE zif_io_memory_writer
+  PUBLIC .
 
 
-  interfaces ZIF_IO_CLOSE_RESOURCE .
-  interfaces ZIF_IO_WRITER .
+  INTERFACES zif_io_close_resource .
+  INTERFACES zif_io_writer .
 
-  methods GET_RESULT
-    exporting
-      !RESULT type ANY
-      !LENGTH_OF_LAST_LINE type I
-    raising
-      ZCX_IO_PARAMETER_INVALID_TYPE .
-  methods GET_RESULT_TYPE
-    exporting
-      !RESULT_TYPE type ref to CL_ABAP_DATADESCR .
-endinterface.
+  METHODS get_result
+    EXPORTING
+      !result              TYPE any
+      !length_of_last_line TYPE i
+      "! Total length
+      !length              TYPE i
+    RAISING
+      zcx_io_parameter_invalid_type .
+
+  METHODS get_result_type
+    EXPORTING
+      !result_type TYPE REF TO cl_abap_datadescr .
+
+ENDINTERFACE.
