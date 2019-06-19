@@ -19,7 +19,7 @@ CLASS ltc_main IMPLEMENTATION.
     test_x_reader( NEW zcl_io_itab_x_reader( itab = CONV xstring_table( itab_01_to_1a ) ) ).
   ENDMETHOD.
   METHOD itab_xstring_length.
-    test_x_reader( NEW zcl_io_itab_x_reader( itab = CONV xstring_table( itab_01_to_1b ) length = 26 ) ).
+    test_x_reader( NEW zcl_io_itab_x_reader( itab = CONV xstring_table( itab_01_to_1c ) length = 26 ) ).
   ENDMETHOD.
   METHOD itab_xstring_empty.
     test_x_reader_empty( NEW zcl_io_itab_x_reader( itab = VALUE xstring_table( ) ) ).
@@ -29,7 +29,7 @@ CLASS ltc_main IMPLEMENTATION.
     test_x_reader( NEW zcl_io_itab_x_reader( itab = itab_01_to_1a ) ).
   ENDMETHOD.
   METHOD itab_x_length.
-    test_x_reader( NEW zcl_io_itab_x_reader( itab = itab_01_to_1b length = 26 ) ).
+    test_x_reader( NEW zcl_io_itab_x_reader( itab = itab_01_to_1c length = 26 ) ).
   ENDMETHOD.
   METHOD itab_x_empty.
     test_x_reader_empty( NEW zcl_io_itab_x_reader( itab = VALUE zcl_io_test=>ty_x3_s( ) ) ).

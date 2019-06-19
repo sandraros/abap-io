@@ -41,14 +41,19 @@ CLASS zcl_io_c_writer IMPLEMENTATION.
 
 
   METHOD zif_io_close_resource~close.
+    closed = abap_true.
   ENDMETHOD.
 
 
   METHOD zif_io_close_resource~is_closed.
+    closed = me->closed.
   ENDMETHOD.
 
 
   METHOD zif_io_c_writer~write.
+    IF closed = abap_true.
+      RAISE EXCEPTION TYPE zcx_io_resource_already_closed.
+    ENDIF.
     CALL METHOD me->('WRITE_INTERNAL')
       EXPORTING
         data = data.
@@ -56,6 +61,9 @@ CLASS zcl_io_c_writer IMPLEMENTATION.
 
 
   METHOD zif_io_writer~flush.
+    IF closed = abap_true.
+      RAISE EXCEPTION TYPE zcx_io_resource_already_closed.
+    ENDIF.
   ENDMETHOD.
 
 
@@ -65,6 +73,9 @@ CLASS zcl_io_c_writer IMPLEMENTATION.
 
 
   METHOD zif_io_writer~write.
+    IF closed = abap_true.
+      RAISE EXCEPTION TYPE zcx_io_resource_already_closed.
+    ENDIF.
     CALL METHOD me->('WRITE_INTERNAL')
       EXPORTING
         data = data.

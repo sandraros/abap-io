@@ -1,59 +1,59 @@
 "! <p class="shorttext synchronized" lang="en">Internal table character writer</p>
 "!
-class ZCL_IO_ITAB_C_WRITER definition
-  public
-  inheriting from ZCL_IO_MEMORY_C_WRITER
-  final
-  create public
+CLASS zcl_io_itab_c_writer DEFINITION
+  PUBLIC
+  INHERITING FROM zcl_io_memory_c_writer
+  FINAL
+  CREATE PUBLIC
 
-  global friends ZCL_IO_C_WRITER .
+  GLOBAL FRIENDS zcl_io_c_writer .
 
-public section.
-  type-pools ABAP .
-  class CL_ABAP_TYPEDESCR definition load .
+  PUBLIC SECTION.
+    TYPE-POOLS abap .
+    CLASS cl_abap_typedescr DEFINITION LOAD .
 
-  interfaces ZIF_IO_ITAB_WRITER .
+    INTERFACES zif_io_itab_writer .
 
-  aliases GET_MAX_LINE_LENGTH
-    for ZIF_IO_ITAB_WRITER~GET_MAX_LINE_LENGTH .
-  aliases bind_result_area
-    for zif_io_itab_writer~bind_result_area.
-  aliases GET_RESULT_TABLE
-    for ZIF_IO_ITAB_WRITER~GET_RESULT_TABLE .
+    ALIASES get_max_line_length
+      FOR zif_io_itab_writer~get_max_line_length .
+    ALIASES bind_result_area
+      FOR zif_io_itab_writer~bind_result_area.
+    ALIASES get_result_table
+      FOR zif_io_itab_writer~get_result_table .
 
-  methods CONSTRUCTOR
-    importing
-      !LINE_LENGTH type I default 255
-      !LINE_TYPE type ABAP_TYPECATEGORY default CL_ABAP_TYPEDESCR=>TYPEKIND_STRING
-    raising
-      ZCX_IO_PARAMETER_INVALID_RANGE .
+    METHODS constructor
+      IMPORTING
+        !line_length TYPE i DEFAULT 255
+        !line_type   TYPE abap_typecategory DEFAULT cl_abap_typedescr=>typekind_string
+      RAISING
+        zcx_io_parameter_invalid_range .
 
-  methods ZIF_IO_MEMORY_WRITER~GET_RESULT
-    redefinition .
-  methods ZIF_IO_MEMORY_WRITER~GET_RESULT_TYPE
-    redefinition .
-protected section.
+    METHODS zif_io_memory_writer~get_result
+        REDEFINITION .
+    METHODS zif_io_memory_writer~get_result_type
+        REDEFINITION .
+  PROTECTED SECTION.
 
-  data M_TABLE type ref to DATA .
-  data M_LINE_INDEX type I .
-  data M_LINE_LENGTH type I .
-private section.
+    DATA m_table TYPE REF TO data .
+    DATA m_line_index TYPE i .
+    DATA m_line_length TYPE i .
+  PRIVATE SECTION.
 
-  data M_OFFSET type I .
-  data M_LINE_TYPE type ref to CL_ABAP_ELEMDESCR .
-  data M_LINE_TYPE_IS_STRING type ABAP_BOOL .
+    DATA m_offset TYPE i .
+    DATA m_line_type TYPE REF TO cl_abap_elemdescr .
+    DATA m_line_type_is_string TYPE abap_bool .
 
-  methods WRITE_INTERNAL
-    importing
-      !DATA type STRING .
+    METHODS write_internal
+      IMPORTING
+        !data TYPE string .
 ENDCLASS.
 
 
 
-CLASS ZCL_IO_ITAB_C_WRITER IMPLEMENTATION.
+CLASS zcl_io_itab_c_writer IMPLEMENTATION.
 
 
-  method CONSTRUCTOR.
+  METHOD constructor.
 
     DATA table_type TYPE REF TO cl_abap_tabledescr.
     DATA str TYPE string.
@@ -84,24 +84,24 @@ CLASS ZCL_IO_ITAB_C_WRITER IMPLEMENTATION.
     m_line_length = line_length.
     m_line_index = 1.
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method WRITE_INTERNAL.
- "BY KERNEL MODULE ab_km_ItabCWRiteInternal.
+  METHOD write_internal.
+    "BY KERNEL MODULE ab_km_ItabCWRiteInternal.
     "TODO
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method ZIF_IO_ITAB_WRITER~GET_MAX_LINE_LENGTH.
+  METHOD zif_io_itab_writer~get_max_line_length.
 
     line_length = m_line_length.
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method ZIF_IO_ITAB_WRITER~GET_RESULT_TABLE.
+  METHOD zif_io_itab_writer~get_result_table.
 
     FIELD-SYMBOLS <table> TYPE STANDARD TABLE.
 
@@ -110,10 +110,10 @@ CLASS ZCL_IO_ITAB_C_WRITER IMPLEMENTATION.
     table = <table>.
     length_of_last_line = m_offset.
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method ZIF_IO_MEMORY_WRITER~GET_RESULT.
+  METHOD zif_io_memory_writer~get_result.
 
     FIELD-SYMBOLS <table> TYPE STANDARD TABLE.
 
@@ -122,18 +122,18 @@ CLASS ZCL_IO_ITAB_C_WRITER IMPLEMENTATION.
     result = <table>.
     length_of_last_line = m_offset.
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method ZIF_IO_MEMORY_WRITER~GET_RESULT_TYPE.
+  METHOD zif_io_memory_writer~get_result_type.
 
     result_type ?= cl_abap_typedescr=>describe_by_data_ref( m_table ).
 
-  endmethod.
+  ENDMETHOD.
 
-  METHOD ZIF_IO_ITAB_WRITER~BIND_RESULT_AREA.
+  METHOD zif_io_itab_writer~bind_result_area.
 
-    m_table = ref #( table ).
+    m_table = REF #( table ).
 
   ENDMETHOD.
 

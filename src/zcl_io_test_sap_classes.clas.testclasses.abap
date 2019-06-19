@@ -216,15 +216,17 @@ CLASS ltc_main IMPLEMENTATION.
     cl_abap_unit_assert=>assert_equals( msg = 'xstring should be 01...1A' exp = zcl_io_test=>itab_01_to_1a act = itab2 ).
     cl_abap_unit_assert=>assert_equals( msg = 'length of last line should be 2' exp = 2 act = length ).
 
+    " test "LENGTH_OF_LAST_LINE"
     writer = NEW cl_abap_itab_x_writer(
         line_type   = cl_abap_typedescr=>typekind_hex
         line_length = 3 ).
-    test_x_writer( writer ).
+    writer->write( CONV #( zcl_io_test=>_01_to_1c ) ).
+    writer->close( ).
     writer->get_result_table(
       IMPORTING
         table               = itab3
         length_of_last_line = length ).
-    cl_abap_unit_assert=>assert_equals( msg = 'xstring should be 01...1C' exp = zcl_io_test=>itab_01_to_1c act = itab3 ).
+    cl_abap_unit_assert=>assert_equals( msg = 'xstring should be 01...1C' act = itab3 exp = zcl_io_test=>itab_01_to_1c ).
     cl_abap_unit_assert=>assert_equals( msg = 'length of last line should be 1' exp = 1 act = length ).
 
   ENDMETHOD.

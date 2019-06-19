@@ -338,13 +338,13 @@ CLASS zcl_io_test_sap_classes IMPLEMENTATION.
 
     DO 2 TIMES.
       writer->write( substring( val = sy-abcde off = ( sy-index - 1 ) * 13 len = 13 ) ).
-      writer->flush( ).
     ENDDO.
 
     writer->close( ).
     cl_abap_unit_assert=>assert_equals( msg = 'IS_CLOSED should return true' exp = ABAp_true act = writer->is_closed( ) ).
 
     writer->close( ).
+    cl_abap_unit_assert=>assert_equals( msg = 'IS_CLOSED should return true' exp = ABAp_true act = writer->is_closed( ) ).
 
     " exceptions for all operations on a closed stream
     DO 2 TIMES.
@@ -368,7 +368,6 @@ CLASS zcl_io_test_sap_classes IMPLEMENTATION.
     DO 2 TIMES.
       data(i) = ( sy-index - 1 ) * 13.
       writer->write( conv #( zcl_io_test=>_01_to_1a+i(13) ) ).
-      writer->flush( ).
     ENDDO.
 
     writer->close( ).

@@ -26,11 +26,25 @@ CLASS zcl_io_test DEFINITION
       EXPORTING
         et_chunk TYPE STANDARD TABLE.
 
+    CLASS-METHODS split_c2
+      IMPORTING
+        i_field  TYPE clike
+        it_model TYPE STANDARD TABLE optional
+      RETURNING
+        VALUE(table) TYPE string_TABLE.
+
     CLASS-METHODS split_x
       IMPORTING
         i_field  TYPE xsequence
       EXPORTING
         et_chunk TYPE STANDARD TABLE.
+
+    CLASS-METHODS split_x2
+      IMPORTING
+        i_field  TYPE xsequence
+        it_model TYPE STANDARD TABLE optional
+      RETURNING
+        VALUE(table) TYPE xstring_TABLE.
 
     CONSTANTS:
       _01_to_1a TYPE x LENGTH 26 VALUE '0102030405060708090A0B0C0D0E0F101112131415161718191A',
@@ -43,14 +57,6 @@ CLASS zcl_io_test DEFINITION
       itab_01_to_1c TYPE zcl_io_test=>ty_x3_s.
 
   PROTECTED SECTION.
-
-    METHODS test_reader
-      IMPORTING
-        !reader TYPE REF TO zif_io_reader .
-
-    METHODS test_writer
-      IMPORTING
-        !writer TYPE REF TO zif_io_writer .
 
     METHODS test_c_reader
       IMPORTING
@@ -84,7 +90,6 @@ CLASS zcl_io_test DEFINITION
       IMPORTING
         !writer TYPE REF TO zif_io_x_writer .
 
-  PRIVATE SECTION.
 ENDCLASS.
 
 
@@ -92,10 +97,10 @@ ENDCLASS.
 CLASS zcl_io_test IMPLEMENTATION.
 
   METHOD class_constructor.
-    zcl_io_test=>split_c( EXPORTING i_field = sy-abcde IMPORTING et_chunk = itab_a_to_z ).
-    zcl_io_test=>split_c( EXPORTING i_field = sy-abcde && '01' IMPORTING et_chunk = itab_a_to_z01 ).
-    zcl_io_test=>split_x( EXPORTING i_field = zcl_io_test=>_01_to_1a IMPORTING et_chunk = itab_01_to_1a ).
-    zcl_io_test=>split_x( EXPORTING i_field = _01_to_1c IMPORTING et_chunk = itab_01_to_1c ).
+    split_c( EXPORTING i_field = sy-abcde IMPORTING et_chunk = itab_a_to_z ).
+    split_c( EXPORTING i_field = sy-abcde && '01' IMPORTING et_chunk = itab_a_to_z01 ).
+    split_x( EXPORTING i_field = zcl_io_test=>_01_to_1a IMPORTING et_chunk = itab_01_to_1a ).
+    split_x( EXPORTING i_field = _01_to_1c IMPORTING et_chunk = itab_01_to_1c ).
   ENDMETHOD.
 
   METHOD test_c_reader.
@@ -235,39 +240,31 @@ CLASS zcl_io_test IMPLEMENTATION.
 
   METHOD test_c_writer.
 
+    cl_abap_unit_assert=>assert_equals( msg = 'IS_X_WRITER should return false' exp = ABAp_false act = writer->is_x_writer( ) ).
+    cl_abap_unit_assert=>assert_equals( msg = 'IS_CLOSED should return false' exp = ABAp_false act = writer->is_closed( ) ).
+
     DO 2 TIMES.
-      writer->write( CONV #( substring( val = sy-abcde off = ( sy-index - 1 ) * 13 len = 13 ) ) ).
-      writer->flush( ).
+      writer->write( substring( val = sy-abcde off = ( sy-index - 1 ) * 13 len = 13 ) ).
     ENDDO.
 
     writer->close( ).
+    cl_abap_unit_assert=>assert_equals( msg = 'IS_CLOSED should return true' exp = ABAp_true act = writer->is_closed( ) ).
 
+    " should not fail
     writer->close( ).
+    cl_abap_unit_assert=>assert_equals( msg = 'IS_CLOSED should return true' exp = ABAp_true act = writer->is_closed( ) ).
 
-  ENDMETHOD.
-
-
-  METHOD test_reader.
-
-    DATA lo_c_reader TYPE REF TO zif_io_c_reader.
-    DATA lo_x_reader TYPE REF TO zif_io_x_reader.
-    IF abap_true = reader->is_x_reader( ).
-      lo_x_reader ?= reader.
-      CALL METHOD test_x_reader
-        EXPORTING
-          reader = lo_x_reader.
-    ELSE.
-      lo_c_reader ?= reader.
-      CALL METHOD test_c_reader
-        EXPORTING
-          reader = lo_c_reader.
-    ENDIF.
-
-  ENDMETHOD.
-
-
-  METHOD test_writer.
-
+    " exceptions for all operations on a closed stream
+    DO 2 TIMES.
+      TRY.
+          CASE sy-index.
+            WHEN 1. writer->write( 'A' ).
+            WHEN 2. writer->flush( ).
+          ENDCASE.
+        CATCH zcx_io_resource_already_closed INTO DATA(lx_closed).
+      ENDTRY.
+      cl_abap_unit_assert=>assert_bound( msg = 'expecting exception on closed stream' act = lx_closed ).
+    ENDDO.
 
   ENDMETHOD.
 
@@ -406,82 +403,6 @@ CLASS zcl_io_test IMPLEMENTATION.
 
   METHOD test_x_writer.
 
-*  ENDMETHOD.
-*
-*
-*
-*  METHOD test_string_c.
-*
-*    DATA lo_c_writer TYPE REF TO zcl_io_string_c_writer.
-*    DATA lo_c_reader TYPE REF TO zcl_io_string_c_reader.
-*    DATA l_string TYPE string.
-*    DATA l_dummy TYPE string.
-*
-*    CREATE OBJECT lo_c_writer
-*      EXPORTING
-*        str = l_string.
-*    CALL METHOD test_writer
-*      EXPORTING
-*        io_writer = lo_c_writer.
-*    l_dummy = lo_c_writer->get_result_string( ).
-*    cl_aunit_assert=>assert_equals( act = l_dummy exp = l_string ).
-*
-*    CREATE OBJECT lo_c_reader
-*      EXPORTING
-*        str = l_string.
-*    CALL METHOD test_reader
-*      EXPORTING
-*        io_reader = lo_c_reader.
-*
-*  ENDMETHOD.
-*
-*
-*
-*
-*  METHOD test_gzip.
-*
-*    DATA lo_gzip_x_writer TYPE REF TO zcl_io_filter_gzip_x_writer.
-*    DATA lo_gzip_x_reader TYPE REF TO zcl_io_filter_gzip_x_reader.
-*    DATA lo_gzip_c_writer TYPE REF TO zcl_io_filter_gzip_c_writer.
-*    DATA lo_gzip_c_reader TYPE REF TO zcl_io_filter_gzip_c_reader.
-*    DATA lo_string_x_writer TYPE REF TO zcl_io_string_x_writer.
-*    DATA lo_string_x_reader TYPE REF TO zcl_io_string_x_reader.
-*    DATA l_string TYPE string.
-*    DATA l_xstring TYPE xstring.
-*
-*    CREATE OBJECT lo_string_x_writer
-*      EXPORTING
-*        xstr = l_xstring.
-*
-*    CREATE OBJECT lo_gzip_x_writer
-*      EXPORTING
-*        io_x_writer   = lo_string_x_writer
-*        i_buffer_size = 1000.
-*    CALL METHOD test_writer
-*      EXPORTING
-*        io_writer = lo_gzip_x_writer.
-*    ASSERT l_xstring = ''. "valeur zippÃ©e
-*
-*    CREATE OBJECT lo_gzip_c_writer
-*      EXPORTING
-*        io_x_writer   = lo_string_x_writer
-*        i_buffer_size = 1000.
-*    lo_gzip_c_writer->write( 'AAA' ).
-*
-*
-*    lo_string_x_reader = new zcl_io_string_x_reader( xstr = l_xstring ).
-*    CREATE OBJECT lo_gzip_x_reader
-*      EXPORTING
-*        reader   = lo_string_x_reader "containing GZIPped data
-*        i_gzip_buffer = 1000.
-*    l_xstring = lo_gzip_x_reader->read( 100 ). "lire 100 octets dÃ©compressÃ©s
-*
-*    CREATE OBJECT lo_gzip_c_reader
-*      EXPORTING
-*        reader   = lo_string_x_reader
-*        i_gzip_buffer = 1000.
-*    l_string = lo_gzip_c_reader->read( 100 ). "lire 100 caractÃ¨res dÃ©compressÃ©s
-
   ENDMETHOD.
 
   METHOD split_c.
@@ -490,9 +411,21 @@ CLASS zcl_io_test IMPLEMENTATION.
     et_chunk = VALUE string_table( FOR <match> IN matches ( CONV #( i_field+<match>-offset(<match>-length) ) ) ).
   ENDMETHOD.
 
+  METHOD split_c2.
+    DATA(i) = CAST cl_abap_elemdescr( CAST cl_abap_tabledescr( cl_abap_typedescr=>describe_by_data( it_model ) )->get_table_line_type( ) )->length / cl_abap_char_utilities=>charsize.
+    FIND ALL OCCURRENCES OF REGEX replace( val = '.{5}|.{1,5}$' sub = '5' with = |{ i }| occ = 0 ) IN i_field RESULTS DATA(matches).
+    table = VALUE string_table( FOR <match> IN matches ( CONV #( i_field+<match>-offset(<match>-length) ) ) ).
+  ENDMETHOD.
+
   METHOD split_x.
     DATA(i) = CAST cl_abap_elemdescr( CAST cl_abap_tabledescr( cl_abap_typedescr=>describe_by_data( et_chunk ) )->get_table_line_type( ) )->length.
     et_chunk = VALUE xstring_table( FOR j = 0 THEN j + i WHILE j < xstrlen( i_field )
+        LET i2 = nmin( val1 = i val2 = xstrlen( i_field ) - j ) IN ( CONV xstring( i_field+j(i2) ) ) ).
+  ENDMETHOD.
+
+  METHOD split_x2.
+    DATA(i) = CAST cl_abap_elemdescr( CAST cl_abap_tabledescr( cl_abap_typedescr=>describe_by_data( it_model ) )->get_table_line_type( ) )->length.
+    table = VALUE xstring_table( FOR j = 0 THEN j + i WHILE j < xstrlen( i_field )
         LET i2 = nmin( val1 = i val2 = xstrlen( i_field ) - j ) IN ( CONV xstring( i_field+j(i2) ) ) ).
   ENDMETHOD.
 

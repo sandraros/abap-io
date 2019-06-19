@@ -15,21 +15,17 @@ CLASS zcl_io_string_c_writer DEFINITION
     METHODS constructor
       IMPORTING
         !str TYPE string OPTIONAL .
-
     METHODS bind_result_area
-      CHANGING
-        str TYPE string.
-
+      exPORTING
+        !str TYPE string .
     METHODS get_result_string
       RETURNING
         VALUE(str) TYPE string .
 
-    METHODS get_result
+    METHODS zif_io_memory_writer~get_result
         REDEFINITION .
-
-    METHODS get_result_type
+    METHODS zif_io_memory_writer~get_result_type
         REDEFINITION .
-
   PROTECTED SECTION.
   PRIVATE SECTION.
 
@@ -43,7 +39,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_IO_STRING_C_WRITER IMPLEMENTATION.
+CLASS zcl_io_string_c_writer IMPLEMENTATION.
 
 
   METHOD bind_result_area.
@@ -61,7 +57,7 @@ CLASS ZCL_IO_STRING_C_WRITER IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD get_result.
+  METHOD zif_io_memory_writer~get_result.
 
     DATA: lo_rtti     TYPE REF TO cl_abap_typedescr,
           l_type_kind TYPE string.
@@ -86,7 +82,7 @@ CLASS ZCL_IO_STRING_C_WRITER IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD get_result_type.
+  METHOD zif_io_memory_writer~get_result_type.
 
     result_type = cl_abap_elemdescr=>get_string( ).
 
@@ -102,4 +98,6 @@ CLASS ZCL_IO_STRING_C_WRITER IMPLEMENTATION.
     ENDIF.
 
   ENDMETHOD.
+
+
 ENDCLASS.

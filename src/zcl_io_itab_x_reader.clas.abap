@@ -195,7 +195,7 @@ CLASS zcl_io_itab_x_reader IMPLEMENTATION.
         SUBTRACT l_take FROM l_remain.
         IF l_remain = 0.
           " The requested number of bytes have been extracted
-          IF m_line_index > lines( <input> ).
+          IF m_line_index > lines( <input> ) OR ( m_length > -1 AND m_global_position >= m_length ).
             m_data_available = abap_false.
           ENDIF.
           EXIT.
