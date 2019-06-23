@@ -24,9 +24,9 @@ CLASS zcl_io_x_writer DEFINITION
     ALIASES write
       FOR zif_io_x_writer~write .
 
-    METHODS constructor .
   PROTECTED SECTION.
   PRIVATE SECTION.
+    DATA closed TYPE abap_bool .
 ENDCLASS.
 
 
@@ -34,17 +34,13 @@ ENDCLASS.
 CLASS zcl_io_x_writer IMPLEMENTATION.
 
 
-  METHOD constructor.
-
-
-  ENDMETHOD.
-
-
   METHOD zif_io_close_resource~close.
+    closed = abap_true.
   ENDMETHOD.
 
 
   METHOD zif_io_close_resource~is_closed.
+    closed = me->closed.
   ENDMETHOD.
 
 
@@ -53,28 +49,31 @@ CLASS zcl_io_x_writer IMPLEMENTATION.
 
 
   METHOD zif_io_writer~is_x_writer.
+    result = abap_true.
   ENDMETHOD.
 
 
   METHOD zif_io_writer~write.
-    CALL METHOD me->('WRITE_INTERNAL') EXPORTING data = data.
-*    DATA type TYPE REF TO cl_abap_typedescr.
-*    DATA l_name TYPE string.
-*    type = cl_abap_typedescr=>describe_by_data( data ).
-*    IF type = cl_abap_elemdescr=>get_xstring( ).
-*      write( data ).
-*    ELSE.
-*      l_name = type->get_relative_name( ).
-*      RAISE EXCEPTION TYPE zcx_io_parameter_invalid_type
-*         EXPORTING
-*           textid = zcx_io_parameter_invalid_type=>zcx_io_parameter_invalid_type
-*           parameter = `DATA`
-*           type = l_name.
-*    ENDIF.
+    DATA type TYPE REF TO cl_abap_typedescr.
+    DATA l_name TYPE string.
+    type = cl_abap_typedescr=>describe_by_data( data ).
+    IF type = cl_abap_elemdescr=>get_xstring( ).
+      write( data ).
+    ELSE.
+      l_name = type->get_relative_name( ).
+      RAISE EXCEPTION TYPE zcx_io_parameter_invalid_type
+        EXPORTING
+          textid    = zcx_io_parameter_invalid_type=>zcx_io_parameter_invalid_type
+          parameter = `DATA`
+          type      = l_name.
+    ENDIF.
   ENDMETHOD.
 
 
   METHOD zif_io_x_writer~write.
+    IF closed = abap_true.
+      RAISE EXCEPTION TYPE zcx_io_resource_already_closed.
+    ENDIF.
     CALL METHOD me->('WRITE_INTERNAL') EXPORTING data = data.
   ENDMETHOD.
 ENDCLASS.

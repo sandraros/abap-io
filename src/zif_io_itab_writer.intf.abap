@@ -14,9 +14,12 @@ INTERFACE zif_io_itab_writer
     FOR zif_io_memory_writer~get_result_type .
 
   METHODS bind_result_area
-    CHANGING
-      table  TYPE STANDARD TABLE
-      length TYPE i DEFAULT -1.
+    IMPORTING
+      string_line_length  TYPE i DEFAULT 255
+    EXPORTING
+      table               TYPE STANDARD TABLE
+      length_of_last_line TYPE i
+      length              TYPE i.
 
   METHODS get_result_table
     EXPORTING

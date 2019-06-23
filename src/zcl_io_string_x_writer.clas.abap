@@ -12,19 +12,18 @@ CLASS zcl_io_string_x_writer DEFINITION
 
     INTERFACES zif_io_string_writer .
 
-    METHODS constructor
-      IMPORTING
-        !xstr TYPE xstring OPTIONAL .
     METHODS bind_result_area
-      CHANGING
-        str TYPE xstring.
+      EXPORTING
+        !str TYPE xstring .
     METHODS get_result_string
       RETURNING
         VALUE(str) TYPE xstring .
-    METHODS get_result
+
+    METHODS zif_io_memory_writer~get_result
         REDEFINITION .
-    METHODS get_result_type
+    METHODS zif_io_memory_writer~get_result_type
         REDEFINITION .
+
   PROTECTED SECTION.
   PRIVATE SECTION.
 
@@ -41,15 +40,14 @@ ENDCLASS.
 CLASS zcl_io_string_x_writer IMPLEMENTATION.
 
 
-  METHOD constructor.
+  METHOD bind_result_area.
 
-    CALL METHOD super->constructor.
-    GET REFERENCE OF xstr INTO m_ref_xstr.
+    m_ref_xstr = REF #( str ).
 
   ENDMETHOD.
 
 
-  METHOD get_result.
+  METHOD zif_io_memory_writer~get_result.
 
     DATA lo_rtti TYPE REF TO cl_abap_typedescr.
     DATA l_type_kind TYPE string.
@@ -73,7 +71,7 @@ CLASS zcl_io_string_x_writer IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD get_result_type.
+  METHOD zif_io_memory_writer~get_result_type.
 
     result_type = cl_abap_elemdescr=>get_xstring( ).
 
@@ -90,10 +88,5 @@ CLASS zcl_io_string_x_writer IMPLEMENTATION.
 
   ENDMETHOD.
 
-  METHOD bind_result_area.
-
-    m_ref_xstr = REF #( str ).
-
-  ENDMETHOD.
 
 ENDCLASS.

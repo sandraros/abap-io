@@ -12,11 +12,8 @@ CLASS zcl_io_string_c_writer DEFINITION
 
     INTERFACES zif_io_string_writer .
 
-    METHODS constructor
-      IMPORTING
-        !str TYPE string OPTIONAL .
     METHODS bind_result_area
-      exPORTING
+      EXPORTING
         !str TYPE string .
     METHODS get_result_string
       RETURNING
@@ -45,14 +42,6 @@ CLASS zcl_io_string_c_writer IMPLEMENTATION.
   METHOD bind_result_area.
 
     m_ref_str = REF #( str ).
-
-  ENDMETHOD.
-
-
-  METHOD constructor.
-
-    CALL METHOD super->constructor.
-    GET REFERENCE OF str INTO m_ref_str.
 
   ENDMETHOD.
 

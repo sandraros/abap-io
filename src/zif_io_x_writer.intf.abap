@@ -7,10 +7,10 @@ INTERFACE zif_io_x_writer
   INTERFACES zif_io_close_resource .
   INTERFACES zif_io_writer .
 
-  ALIASES close
-    FOR zif_io_writer~close .
-  ALIASES is_closed
-    FOR zif_io_writer~is_closed .
+  ALIASES close     FOR zif_io_writer~close .
+  ALIASES is_closed FOR zif_io_writer~is_closed .
+  ALIASES flush     FOR zif_io_writer~flush.
+
 
   METHODS write
     IMPORTING

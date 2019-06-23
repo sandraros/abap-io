@@ -28,10 +28,24 @@ CLASS zcl_io_test DEFINITION
 
     CLASS-METHODS split_c2
       IMPORTING
-        i_field  TYPE clike
-        it_model TYPE STANDARD TABLE optional
+        i_field      TYPE clike
+        it_model     TYPE STANDARD TABLE OPTIONAL
       RETURNING
-        VALUE(table) TYPE string_TABLE.
+        VALUE(table) TYPE string_table.
+
+    CLASS-METHODS substring_clike
+      IMPORTING
+        val           TYPE clike
+        off           TYPE i DEFAULT 0
+        len           TYPE i DEFAULT -1
+      RETURNING
+        VALUE(result) TYPE string.
+
+    CLASS-METHODS conv_string_exact
+      IMPORTING
+        c          TYPE simple
+      RETURNING
+        VALUE(str) TYPE string.
 
     CLASS-METHODS split_x
       IMPORTING
@@ -41,10 +55,10 @@ CLASS zcl_io_test DEFINITION
 
     CLASS-METHODS split_x2
       IMPORTING
-        i_field  TYPE xsequence
-        it_model TYPE STANDARD TABLE optional
+        i_field      TYPE xsequence
+        it_model     TYPE STANDARD TABLE OPTIONAL
       RETURNING
-        VALUE(table) TYPE xstring_TABLE.
+        VALUE(table) TYPE xstring_table.
 
     CONSTANTS:
       _01_to_1a TYPE x LENGTH 26 VALUE '0102030405060708090A0B0C0D0E0F101112131415161718191A',
@@ -240,19 +254,19 @@ CLASS zcl_io_test IMPLEMENTATION.
 
   METHOD test_c_writer.
 
-    cl_abap_unit_assert=>assert_equals( msg = 'IS_X_WRITER should return false' exp = ABAp_false act = writer->is_x_writer( ) ).
-    cl_abap_unit_assert=>assert_equals( msg = 'IS_CLOSED should return false' exp = ABAp_false act = writer->is_closed( ) ).
+    cl_abap_unit_assert=>assert_equals( msg = 'IS_X_WRITER should return false' exp = abap_false act = writer->is_x_writer( ) ).
+    cl_abap_unit_assert=>assert_equals( msg = 'IS_CLOSED should return false' exp = abap_false act = writer->is_closed( ) ).
 
     DO 2 TIMES.
       writer->write( substring( val = sy-abcde off = ( sy-index - 1 ) * 13 len = 13 ) ).
     ENDDO.
 
     writer->close( ).
-    cl_abap_unit_assert=>assert_equals( msg = 'IS_CLOSED should return true' exp = ABAp_true act = writer->is_closed( ) ).
+    cl_abap_unit_assert=>assert_equals( msg = 'IS_CLOSED should return true' exp = abap_true act = writer->is_closed( ) ).
 
     " should not fail
     writer->close( ).
-    cl_abap_unit_assert=>assert_equals( msg = 'IS_CLOSED should return true' exp = ABAp_true act = writer->is_closed( ) ).
+    cl_abap_unit_assert=>assert_equals( msg = 'IS_CLOSED should return true' exp = abap_true act = writer->is_closed( ) ).
 
     " exceptions for all operations on a closed stream
     DO 2 TIMES.
@@ -403,18 +417,57 @@ CLASS zcl_io_test IMPLEMENTATION.
 
   METHOD test_x_writer.
 
+    cl_abap_unit_assert=>assert_equals( msg = 'IS_X_WRITER should return true' exp = abap_true act = writer->zif_io_writer~is_x_writer( ) ).
+    cl_abap_unit_assert=>assert_equals( msg = 'IS_CLOSED should return false' exp = abap_false act = writer->is_closed( ) ).
+
+    DO 2 TIMES.
+      DATA(off) = ( sy-index - 1 ) * 13.
+      writer->write( CONV #( zcl_io_test=>_01_to_1a+off(13) ) ).
+    ENDDO.
+
+    writer->close( ).
+    cl_abap_unit_assert=>assert_equals( msg = 'IS_CLOSED should return true' exp = abap_true act = writer->is_closed( ) ).
+
+    " should not fail
+    writer->close( ).
+    cl_abap_unit_assert=>assert_equals( msg = 'IS_CLOSED should return true' exp = abap_true act = writer->is_closed( ) ).
+
+    " exceptions for all operations on a closed stream
+    DO 2 TIMES.
+      TRY.
+          CASE sy-index.
+            WHEN 1. writer->write( 'AF' ).
+            WHEN 2. writer->flush( ).
+          ENDCASE.
+        CATCH zcx_io_resource_already_closed INTO DATA(lx_closed).
+      ENDTRY.
+      cl_abap_unit_assert=>assert_bound( msg = 'expecting exception on closed stream' act = lx_closed ).
+    ENDDO.
+
   ENDMETHOD.
 
   METHOD split_c.
     DATA(i) = CAST cl_abap_elemdescr( CAST cl_abap_tabledescr( cl_abap_typedescr=>describe_by_data( et_chunk ) )->get_table_line_type( ) )->length / cl_abap_char_utilities=>charsize.
     FIND ALL OCCURRENCES OF REGEX replace( val = '.{5}|.{1,5}$' sub = '5' with = |{ i }| occ = 0 ) IN i_field RESULTS DATA(matches).
-    et_chunk = VALUE string_table( FOR <match> IN matches ( CONV #( i_field+<match>-offset(<match>-length) ) ) ).
+    et_chunk = VALUE string_table( FOR <match> IN matches ( substring_clike( val = i_field off = <match>-offset len = <match>-length ) ) ).
   ENDMETHOD.
 
   METHOD split_c2.
     DATA(i) = CAST cl_abap_elemdescr( CAST cl_abap_tabledescr( cl_abap_typedescr=>describe_by_data( it_model ) )->get_table_line_type( ) )->length / cl_abap_char_utilities=>charsize.
     FIND ALL OCCURRENCES OF REGEX replace( val = '.{5}|.{1,5}$' sub = '5' with = |{ i }| occ = 0 ) IN i_field RESULTS DATA(matches).
-    table = VALUE string_table( FOR <match> IN matches ( CONV #( i_field+<match>-offset(<match>-length) ) ) ).
+    table = VALUE string_table( FOR <match> IN matches ( substring_clike( val = i_field off = <match>-offset len = <match>-length ) ) ).
+  ENDMETHOD.
+
+  METHOD substring_clike.
+    IF len = -1.
+      CONCATENATE space space INTO result SEPARATED BY val+off.
+    ELSE.
+      CONCATENATE space space INTO result SEPARATED BY val+off(len).
+    ENDIF.
+  ENDMETHOD.
+
+  METHOD conv_string_exact.
+    CONCATENATE space space INTO str SEPARATED BY c.
   ENDMETHOD.
 
   METHOD split_x.
