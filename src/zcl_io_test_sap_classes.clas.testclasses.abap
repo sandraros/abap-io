@@ -7,19 +7,35 @@ CLASS ltc_main DEFINITION
       INHERITING FROM zcl_io_test_sap_classes.
   PRIVATE SECTION.
 
-    METHODS string_reader FOR TESTING RAISING cx_static_check.
-    METHODS xstring_reader FOR TESTING RAISING cx_static_check.
-    METHODS itab_c_reader FOR TESTING RAISING cx_static_check.
-    METHODS itab_string_reader FOR TESTING RAISING cx_static_check.
-    METHODS itab_x_reader FOR TESTING RAISING cx_static_check.
-    METHODS itab_xstring_reader FOR TESTING RAISING cx_static_check.
-    METHODS db_c_reader FOR TESTING RAISING cx_static_check.
-    METHODS db_x_reader FOR TESTING RAISING cx_static_check.
+    METHODS:
+      string_reader FOR TESTING RAISING cx_static_check.
+    METHODS:
+      xstring_reader FOR TESTING RAISING cx_static_check.
+    METHODS:
+      itab_c_reader FOR TESTING RAISING cx_static_check,
+      itab_string_reader FOR TESTING RAISING cx_static_check.
+    METHODS:
+      itab_x_reader FOR TESTING RAISING cx_static_check,
+      itab_xstring_reader FOR TESTING RAISING cx_static_check.
+    METHODS:
+      db_string_reader FOR TESTING RAISING cx_static_check.
+    METHODS:
+      db_xstring_reader FOR TESTING RAISING cx_static_check.
 
-    METHODS string_writer FOR TESTING RAISING cx_static_check.
-    METHODS xstring_writer FOR TESTING RAISING cx_static_check.
-    METHODS itab_c_writer FOR TESTING RAISING cx_static_check.
-    METHODS itab_x_writer FOR TESTING RAISING cx_static_check.
+    METHODS:
+      string_writer FOR TESTING RAISING cx_static_check.
+    METHODS:
+      xstring_writer FOR TESTING RAISING cx_static_check.
+    METHODS:
+      itab_c_writer FOR TESTING RAISING cx_static_check.
+    METHODS:
+      itab_x_writer FOR TESTING RAISING cx_static_check.
+    METHODS:
+      db_string_writer FOR TESTING RAISING cx_static_check.
+    METHODS:
+      db_xstring_writer FOR TESTING RAISING cx_static_check.
+
+    CONSTANTS not_applicable TYPE C LENGTH 1 VALUE '!'.
 
 ENDCLASS.
 
@@ -28,17 +44,17 @@ CLASS ltc_main IMPLEMENTATION.
   METHOD string_reader.
 
     DATA(reader) = NEW cl_abap_string_c_reader( str = CONV #( sy-abcde ) ).
-    cl_abap_unit_assert=>assert_equals( msg = 'reset should be supported' exp = abap_true act = reader->is_reset_supported( ) ).
-    cl_abap_unit_assert=>assert_equals( msg = 'mark should be supported' exp = abap_true act = reader->is_mark_supported( ) ).
+    cl_abap_unit_assert=>assert_equals( msg = 'invalid result of IS_RESET_SUPPORTED' exp = abap_true act = reader->is_reset_supported( ) ).
+    cl_abap_unit_assert=>assert_equals( msg = 'invalid result of IS_MARK_SUPPORTED' exp = abap_true act = reader->is_mark_supported( ) ).
 
-    test_c_reader( reader                    = reader
+    test_c_reader( reader                      = reader
                    expect_read_auto_close      = abap_false
                    expect_exc_reset_if_no_mark = abap_true
                    expect_avail_last_char      = abap_false
                    expect_exc_read_beyond_end  = abap_true ).
 
     reader = NEW cl_abap_string_c_reader( str = `` ).
-    cl_abap_unit_assert=>assert_equals( msg = 'data_available should be false for empty stream' exp = abap_false act = reader->data_available( ) ).
+    cl_abap_unit_assert=>assert_equals( msg = 'invalid result of DATA_AVAILABLE for empty stream' exp = abap_false act = reader->data_available( ) ).
 
   ENDMETHOD.
 
@@ -48,10 +64,10 @@ CLASS ltc_main IMPLEMENTATION.
     zcl_io_test=>split_c( EXPORTING i_field = sy-abcde IMPORTING et_chunk = itab ).
 
     DATA(reader) = NEW cl_abap_itab_c_reader( itab ).
-    cl_abap_unit_assert=>assert_equals( msg = 'reset should be supported' exp = abap_true act = reader->is_reset_supported( ) ).
-    cl_abap_unit_assert=>assert_equals( msg = 'mark should be supported' exp = abap_true act = reader->is_mark_supported( ) ).
+    cl_abap_unit_assert=>assert_equals( msg = 'invalid result of IS_RESET_SUPPORTED' exp = abap_true act = reader->is_reset_supported( ) ).
+    cl_abap_unit_assert=>assert_equals( msg = 'invalid result of IS_MARK_SUPPORTED' exp = abap_true act = reader->is_mark_supported( ) ).
 
-    test_c_reader( reader                    = reader
+    test_c_reader( reader                      = reader
                    expect_read_auto_close      = abap_false
                    expect_exc_reset_if_no_mark = abap_false
                    expect_avail_last_char      = abap_true
@@ -59,28 +75,28 @@ CLASS ltc_main IMPLEMENTATION.
 
     CLEAR itab.
     reader = NEW cl_abap_itab_c_reader( itab ).
-    cl_abap_unit_assert=>assert_equals( msg = 'data_available should be false for empty stream' exp = abap_false act = reader->data_available( ) ).
+    cl_abap_unit_assert=>assert_equals( msg = 'invalid result of DATA_AVAILABLE for empty stream' exp = abap_false act = reader->data_available( ) ).
 
   ENDMETHOD.
 
   METHOD itab_string_reader.
 
     DATA(reader) = NEW cl_abap_string_c_reader( str = CONV #( sy-abcde ) ).
-    cl_abap_unit_assert=>assert_equals( msg = 'reset should be supported' exp = abap_true act = reader->is_reset_supported( ) ).
-    cl_abap_unit_assert=>assert_equals( msg = 'mark should be supported' exp = abap_true act = reader->is_mark_supported( ) ).
+    cl_abap_unit_assert=>assert_equals( msg = 'invalid result of IS_RESET_SUPPORTED' exp = abap_true act = reader->is_reset_supported( ) ).
+    cl_abap_unit_assert=>assert_equals( msg = 'invalid result of IS_MARK_SUPPORTED' exp = abap_true act = reader->is_mark_supported( ) ).
 
-    test_c_reader( reader                    = reader
+    test_c_reader( reader                      = reader
                    expect_read_auto_close      = abap_false
                    expect_exc_reset_if_no_mark = abap_true
                    expect_avail_last_char      = abap_false
                    expect_exc_read_beyond_end  = abap_true ).
 
     reader = NEW cl_abap_string_c_reader( str = `` ).
-    cl_abap_unit_assert=>assert_equals( msg = 'data_available should be false for empty stream' exp = abap_false act = reader->data_available( ) ).
+    cl_abap_unit_assert=>assert_equals( msg = 'invalid result of DATA_AVAILABLE for empty stream' exp = abap_false act = reader->data_available( ) ).
 
   ENDMETHOD.
 
-  METHOD db_c_reader.
+  METHOD db_string_reader.
     DATA reader TYPE REF TO cl_abap_db_c_reader.
 
     DATA(demo_lob_table) = VALUE demo_lob_table( idx = 1 clob1 = sy-abcde clob2 = `` ).
@@ -89,34 +105,34 @@ CLASS ltc_main IMPLEMENTATION.
 
     SELECT SINGLE clob1 FROM demo_lob_table INTO reader WHERE idx = 1.
     cl_abap_unit_assert=>assert_subrc( msg = 'test cannot be executed' exp = 0 act = sy-subrc ).
-    cl_abap_unit_assert=>assert_equals( msg = 'reset should not be supported' exp = abap_false act = reader->is_reset_supported( ) ).
-    cl_abap_unit_assert=>assert_equals( msg = 'mark should not be supported' exp = abap_false act = reader->is_mark_supported( ) ).
+    cl_abap_unit_assert=>assert_equals( msg = 'invalid result of IS_RESET_SUPPORTED' exp = abap_false act = reader->is_reset_supported( ) ).
+    cl_abap_unit_assert=>assert_equals( msg = 'invalid result of IS_MARK_SUPPORTED' exp = abap_false act = reader->is_mark_supported( ) ).
 
-    test_c_reader( reader                    = reader
+    test_c_reader( reader                      = reader
                    expect_read_auto_close      = abap_true
                    expect_exc_reset_if_no_mark = abap_true
                    expect_avail_last_char      = abap_false
-                   expect_exc_read_beyond_end  = abap_true ).
+                   expect_exc_read_beyond_end  = not_applicable ).
 
     SELECT SINGLE clob2 FROM demo_lob_table INTO reader WHERE idx = 1.
-    cl_abap_unit_assert=>assert_equals( msg = 'data_available should be false for empty stream' exp = abap_false act = reader->data_available( ) ).
+    cl_abap_unit_assert=>assert_equals( msg = 'invalid result of DATA_AVAILABLE for empty stream' exp = abap_false act = reader->data_available( ) ).
 
     ROLLBACK WORK.
   ENDMETHOD.
 
   METHOD xstring_reader.
     DATA(reader) = NEW cl_abap_string_x_reader( str = CONV #( zcl_io_test=>_01_to_1a ) ).
-    cl_abap_unit_assert=>assert_equals( msg = 'reset should be supported' exp = abap_true act = reader->is_reset_supported( ) ).
-    cl_abap_unit_assert=>assert_equals( msg = 'mark should be supported' exp = abap_true act = reader->is_mark_supported( ) ).
+    cl_abap_unit_assert=>assert_equals( msg = 'invalid result of IS_RESET_SUPPORTED' exp = abap_true act = reader->is_reset_supported( ) ).
+    cl_abap_unit_assert=>assert_equals( msg = 'invalid result of IS_MARK_SUPPORTED' exp = abap_true act = reader->is_mark_supported( ) ).
 
-    test_x_reader( reader                    = reader
+    test_x_reader( reader                      = reader
                    expect_read_auto_close      = abap_false
                    expect_exc_reset_if_no_mark = abap_true
                    expect_avail_last_char      = abap_false
                    expect_exc_read_beyond_end  = abap_true ).
 
     reader = NEW cl_abap_string_x_reader( VALUE #( ) ).
-    cl_abap_unit_assert=>assert_equals( msg = 'data_available should be false for empty stream' exp = abap_false act = reader->data_available( ) ).
+    cl_abap_unit_assert=>assert_equals( msg = 'invalid result of DATA_AVAILABLE for empty stream' exp = abap_false act = reader->data_available( ) ).
 
   ENDMETHOD.
 
@@ -126,10 +142,10 @@ CLASS ltc_main IMPLEMENTATION.
     zcl_io_test=>split_x( EXPORTING i_field = zcl_io_test=>_01_to_1a IMPORTING et_chunk = itab ).
 
     DATA(reader) = NEW cl_abap_itab_x_reader( itab ).
-    cl_abap_unit_assert=>assert_equals( msg = 'reset should be supported' exp = abap_true act = reader->is_reset_supported( ) ).
-    cl_abap_unit_assert=>assert_equals( msg = 'mark should be supported' exp = abap_true act = reader->is_mark_supported( ) ).
+    cl_abap_unit_assert=>assert_equals( msg = 'invalid result of IS_RESET_SUPPORTED' exp = abap_true act = reader->is_reset_supported( ) ).
+    cl_abap_unit_assert=>assert_equals( msg = 'invalid result of IS_MARK_SUPPORTED' exp = abap_true act = reader->is_mark_supported( ) ).
 
-    test_x_reader( reader                    = reader
+    test_x_reader( reader                      = reader
                    expect_read_auto_close      = abap_false
                    expect_exc_reset_if_no_mark = abap_false
                    expect_avail_last_char      = abap_true
@@ -144,21 +160,21 @@ CLASS ltc_main IMPLEMENTATION.
   METHOD itab_xstring_reader.
 
     DATA(reader) = NEW cl_abap_string_x_reader( str = CONV #( zcl_io_test=>_01_to_1a ) ).
-    cl_abap_unit_assert=>assert_equals( msg = 'reset should be supported' exp = abap_true act = reader->is_reset_supported( ) ).
-    cl_abap_unit_assert=>assert_equals( msg = 'mark should be supported' exp = abap_true act = reader->is_mark_supported( ) ).
+    cl_abap_unit_assert=>assert_equals( msg = 'invalid result of IS_RESET_SUPPORTED' exp = abap_true act = reader->is_reset_supported( ) ).
+    cl_abap_unit_assert=>assert_equals( msg = 'invalid result of IS_MARK_SUPPORTED' exp = abap_true act = reader->is_mark_supported( ) ).
 
-    test_x_reader( reader                    = reader
+    test_x_reader( reader                      = reader
                    expect_read_auto_close      = abap_false
                    expect_exc_reset_if_no_mark = abap_true
                    expect_avail_last_char      = abap_false
                    expect_exc_read_beyond_end  = abap_true ).
 
     reader = NEW cl_abap_string_x_reader( str = VALUE #( ) ).
-    cl_abap_unit_assert=>assert_equals( msg = 'data_available should be false for empty stream' exp = abap_false act = reader->data_available( ) ).
+    cl_abap_unit_assert=>assert_equals( msg = 'invalid result of DATA_AVAILABLE for empty stream' exp = abap_false act = reader->data_available( ) ).
 
   ENDMETHOD.
 
-  METHOD db_x_reader.
+  METHOD db_xstring_reader.
     DATA reader TYPE REF TO cl_abap_db_x_reader.
 
     DATA(demo_lob_table) = VALUE demo_lob_table( idx = 1 blob1 = zcl_io_test=>_01_to_1a blob2 = VALUE #( ) ).
@@ -167,17 +183,17 @@ CLASS ltc_main IMPLEMENTATION.
 
     SELECT SINGLE blob1 FROM demo_lob_table INTO reader WHERE idx = 1.
     cl_abap_unit_assert=>assert_subrc( msg = 'test cannot be executed' exp = 0 act = sy-subrc ).
-    cl_abap_unit_assert=>assert_equals( msg = 'reset should not be supported' exp = abap_false act = reader->is_reset_supported( ) ).
-    cl_abap_unit_assert=>assert_equals( msg = 'mark should not be supported' exp = abap_false act = reader->is_mark_supported( ) ).
+    cl_abap_unit_assert=>assert_equals( msg = 'invalid result of IS_RESET_SUPPORTED' exp = abap_false act = reader->is_reset_supported( ) ).
+    cl_abap_unit_assert=>assert_equals( msg = 'invalid result of IS_MARK_SUPPORTED' exp = abap_false act = reader->is_mark_supported( ) ).
 
-    test_x_reader( reader                    = reader
+    test_x_reader( reader                      = reader
                    expect_read_auto_close      = abap_true
                    expect_exc_reset_if_no_mark = abap_true
                    expect_avail_last_char      = abap_false
-                   expect_exc_read_beyond_end  = abap_true ).
+                   expect_exc_read_beyond_end  = not_applicable ).
 
     SELECT SINGLE blob2 FROM demo_lob_table INTO reader WHERE idx = 1.
-    cl_abap_unit_assert=>assert_equals( msg = 'data_available should be false for empty stream' exp = abap_false act = reader->data_available( ) ).
+    cl_abap_unit_assert=>assert_equals( msg = 'invalid result of DATA_AVAILABLE for empty stream' exp = abap_false act = reader->data_available( ) ).
 
     ROLLBACK WORK.
 
@@ -216,7 +232,7 @@ CLASS ltc_main IMPLEMENTATION.
         table               = itab2
         length_of_last_line = length ).
     cl_abap_unit_assert=>assert_equals( msg = 'C table should be A...Z' exp = zcl_io_test=>itab_a_to_z act = itab2 ).
-    cl_abap_unit_assert=>assert_equals( msg = 'length of last line should be 2' exp = 2 act = length ).
+    cl_abap_unit_assert=>assert_equals( msg = 'invalid length of last line' exp = 2 act = length ).
 
     " test "LENGTH_OF_LAST_LINE"
     writer = NEW cl_abap_itab_c_writer(
@@ -229,11 +245,11 @@ CLASS ltc_main IMPLEMENTATION.
         table               = itab3
         length_of_last_line = length ).
     cl_abap_unit_assert=>assert_equals( msg = 'C table should be A...Z01' act = itab3 exp = zcl_io_test=>itab_a_to_z01 ).
-    cl_abap_unit_assert=>assert_equals( msg = 'length of last line should be 1' exp = 1 act = length ).
+    cl_abap_unit_assert=>assert_equals( msg = 'invalid length of last line' exp = 1 act = length ).
 
     " table of STRING
     TYPES: ty_exp_itab_string_line TYPE c LENGTH 100.
-    DATA: c_big                      TYPE c LENGTH 2558,
+    DATA: c_big           TYPE c LENGTH 2558,
           exp_itab_string TYPE STANDARD TABLE OF ty_exp_itab_string_line WITH EMPTY KEY.
 
     writer = NEW cl_abap_itab_c_writer(
@@ -248,7 +264,7 @@ CLASS ltc_main IMPLEMENTATION.
         length_of_last_line = length ).
     cl_abap_unit_assert=>assert_equals( msg = 'itab of xstring should be 26 lines (25 * 100 + 1 * 58)' act = itab_string
             exp = zcl_io_test=>split_c2( i_field = c_big it_model = exp_itab_string ) ).
-    cl_abap_unit_assert=>assert_equals( msg = 'length of last line should be 8' exp = 58 act = length ).
+    cl_abap_unit_assert=>assert_equals( msg = 'invalid length of last line' exp = 58 act = length ).
 
   ENDMETHOD.
 
@@ -269,7 +285,7 @@ CLASS ltc_main IMPLEMENTATION.
         table               = itab2
         length_of_last_line = length ).
     cl_abap_unit_assert=>assert_equals( msg = 'xstring should be 01...1A' exp = zcl_io_test=>itab_01_to_1a act = itab2 ).
-    cl_abap_unit_assert=>assert_equals( msg = 'length of last line should be 2' exp = 2 act = length ).
+    cl_abap_unit_assert=>assert_equals( msg = 'invalid length of last line' exp = 2 act = length ).
 
     " test "LENGTH_OF_LAST_LINE"
     writer = NEW cl_abap_itab_x_writer(
@@ -282,11 +298,11 @@ CLASS ltc_main IMPLEMENTATION.
         table               = itab3
         length_of_last_line = length ).
     cl_abap_unit_assert=>assert_equals( msg = 'xstring should be 01...1C' act = itab3 exp = zcl_io_test=>itab_01_to_1c ).
-    cl_abap_unit_assert=>assert_equals( msg = 'length of last line should be 1' exp = 1 act = length ).
+    cl_abap_unit_assert=>assert_equals( msg = 'invalid length of last line' exp = 1 act = length ).
 
     " table of XSTRING
     TYPES: ty_exp_itab_xstring_line TYPE x LENGTH 100.
-    DATA: x_big                      TYPE x LENGTH 2558,
+    DATA: x_big            TYPE x LENGTH 2558,
           exp_itab_xstring TYPE STANDARD TABLE OF ty_exp_itab_xstring_line WITH EMPTY KEY.
 
     writer = NEW cl_abap_itab_x_writer(
@@ -298,10 +314,44 @@ CLASS ltc_main IMPLEMENTATION.
       IMPORTING
         table               = itab_xstring
         length_of_last_line = length ).
-    cl_abap_unit_assert=>assert_equals( msg = 'itab of xstring should be 26 lines (25 * 100 + 1 * 58)' act = itab_xstring
+    cl_abap_unit_assert=>assert_equals( msg = 'invalid value written to stream (should be 26 lines: 25 * 100 + 1 * 58)' act = itab_xstring
             exp = zcl_io_test=>split_x2( i_field = x_big it_model = exp_itab_xstring ) ).
-    cl_abap_unit_assert=>assert_equals( msg = 'length of last line should be 58' exp = 58 act = length ).
+    cl_abap_unit_assert=>assert_equals( msg = 'invalid length of last line' exp = 58 act = length ).
 
+  ENDMETHOD.
+
+  METHOD db_string_writer.
+    DATA: demo_lob_table type demo_lob_table WRITER FOR COLUMNS clob1.
+
+    demo_lob_table = VALUE #( idx = 1 ).
+    INSERT INTO demo_lob_table VALUES demo_lob_table.
+    cl_abap_unit_assert=>assert_subrc( msg = 'invalid value of SY-SUBRC after INSERT' exp = 2 act = sy-subrc ).
+
+    cl_abap_unit_assert=>assert_equals( msg = 'invalid result of IS_X_WRITER' exp = abap_false act = demo_lob_table-clob1->is_x_writer( ) ).
+
+    test_c_writer( demo_lob_table-clob1 ).
+
+    SELECT SINGLE clob1 FROM demo_lob_table INTO @data(clob1) WHERE idx = 1.
+    cl_abap_unit_assert=>assert_equals( msg = 'invalid INSERTed data' exp = sy-abcde act = clob1 ).
+
+    ROLLBACK WORK.
+  ENDMETHOD.
+
+  METHOD db_xstring_writer.
+    DATA: demo_lob_table type demo_lob_table WRITER FOR COLUMNS blob1.
+
+    demo_lob_table = VALUE #( idx = 1 ).
+    INSERT INTO demo_lob_table VALUES demo_lob_table.
+    cl_abap_unit_assert=>assert_subrc( msg = 'invalid value of SY-SUBRC after INSERT' exp = 2 act = sy-subrc ).
+
+    cl_abap_unit_assert=>assert_equals( msg = 'invalid result of IS_X_WRITER' exp = abap_true act = demo_lob_table-blob1->is_x_writer( ) ).
+
+    test_x_writer( demo_lob_table-blob1 ).
+
+    SELECT SINGLE blob1 FROM demo_lob_table INTO @data(blob1) WHERE idx = 1.
+    cl_abap_unit_assert=>assert_equals( msg = 'invalid INSERTed data' exp = CONV xstring( zcl_io_test=>_01_to_1a ) act = blob1 ).
+
+    ROLLBACK WORK.
   ENDMETHOD.
 
 ENDCLASS.

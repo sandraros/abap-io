@@ -6,9 +6,9 @@ CLASS zcl_io_c_writer DEFINITION
 
   PUBLIC SECTION.
 
-    INTERFACES zif_io_close_resource
-      ALL METHODS FINAL .
     INTERFACES zif_io_c_writer
+      ALL METHODS FINAL .
+    INTERFACES zif_io_close_resource
       ALL METHODS FINAL .
     INTERFACES zif_io_writer
       ALL METHODS FINAL .

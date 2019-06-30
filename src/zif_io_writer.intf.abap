@@ -1,26 +1,28 @@
-interface ZIF_IO_WRITER
-  public .
+"! <p class="shorttext synchronized" lang="en">Writer</p>
+"!
+INTERFACE zif_io_writer
+  PUBLIC .
 
 
-  interfaces ZIF_IO_CLOSE_RESOURCE .
+  INTERFACES zif_io_close_resource .
 
-  aliases CLOSE
-    for ZIF_IO_CLOSE_RESOURCE~CLOSE .
-  aliases IS_CLOSED
-    for ZIF_IO_CLOSE_RESOURCE~IS_CLOSED .
+  ALIASES close
+    FOR zif_io_close_resource~close .
+  ALIASES is_closed
+    FOR zif_io_close_resource~is_closed .
 
-  methods WRITE
-    importing
-      !DATA type ANY
-    raising
-      ZCX_IO_PARAMETER_INVALID_TYPE
-      ZCX_IO_RESOURCE_ALREADY_CLOSED
-      ZCX_IO_STREAM_ERROR .
-  methods FLUSH
-    raising
-      ZCX_IO_RESOURCE_ALREADY_CLOSED
-      ZCX_IO_STREAM_ERROR .
-  methods IS_X_WRITER
-    returning
-      value(RESULT) type ABAP_BOOL .
-endinterface.
+  METHODS write
+    IMPORTING
+      !data TYPE any
+    RAISING
+      zcx_io_parameter_invalid_type
+      zcx_io_resource_already_closed
+      zcx_io_stream_error .
+  METHODS flush
+    RAISING
+      zcx_io_resource_already_closed
+      zcx_io_stream_error .
+  METHODS is_x_writer
+    RETURNING
+      VALUE(result) TYPE abap_bool .
+ENDINTERFACE.

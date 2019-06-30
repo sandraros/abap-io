@@ -9,8 +9,6 @@ CLASS zcl_io_itab_x_writer DEFINITION
   GLOBAL FRIENDS zcl_io_x_writer .
 
   PUBLIC SECTION.
-    TYPE-POOLS abap .
-    CLASS cl_abap_typedescr DEFINITION LOAD .
 
     INTERFACES zif_io_itab_writer .
 
@@ -23,8 +21,9 @@ CLASS zcl_io_itab_x_writer DEFINITION
 
     METHODS constructor
       IMPORTING
-        !line_length TYPE i DEFAULT 255
         !line_type   TYPE abap_typecategory DEFAULT cl_abap_typedescr=>typekind_xstring
+        !line_length TYPE i DEFAULT 255
+          PREFERRED PARAMETER line_type
       RAISING
         zcx_io_parameter_invalid_range .
 
@@ -40,7 +39,7 @@ CLASS zcl_io_itab_x_writer DEFINITION
 
   PRIVATE SECTION.
 
-    DATA m_ref_table TYPE REF TO data .
+    DATA m_table TYPE REF TO data .
     DATA m_ref_length TYPE REF TO i .
     DATA m_ref_offset TYPE REF TO i .
 
@@ -59,7 +58,7 @@ CLASS zcl_io_itab_x_writer IMPLEMENTATION.
 
   METHOD constructor.
 
-    DATA: str TYPE string.
+    DATA str TYPE string.
 
     super->constructor( ).
 
@@ -88,10 +87,10 @@ CLASS zcl_io_itab_x_writer IMPLEMENTATION.
   METHOD write_internal.
     FIELD-SYMBOLS <table> TYPE STANDARD TABLE.
 
-    IF m_ref_table IS NOT BOUND.
+    IF m_table IS NOT BOUND.
       create_table( ).
     ENDIF.
-    ASSIGN m_ref_table->* TO <table>.
+    ASSIGN m_table->* TO <table>.
 
     DATA(offset) = 0.
     DATA(remain) = xstrlen( data ).
@@ -125,10 +124,10 @@ CLASS zcl_io_itab_x_writer IMPLEMENTATION.
   METHOD create_table.
 
     IF m_line_type = cl_abap_typedescr=>typekind_xstring.
-      CREATE DATA m_ref_table TYPE STANDARD TABLE OF xstring.
+      CREATE DATA m_table TYPE STANDARD TABLE OF xstring.
     ELSE.
       DATA(table_type) = cl_abap_tabledescr=>create( cl_abap_elemdescr=>get_x( m_line_length ) ).
-      CREATE DATA m_ref_table TYPE HANDLE table_type.
+      CREATE DATA m_table TYPE HANDLE table_type.
     ENDIF.
     CREATE DATA m_ref_length TYPE i.
     CREATE DATA m_ref_offset TYPE i.
@@ -138,7 +137,7 @@ CLASS zcl_io_itab_x_writer IMPLEMENTATION.
 
   METHOD zif_io_itab_writer~bind_result_area.
 
-    m_ref_table = REF #( table ).
+    m_table = REF #( table ).
     DATA(line_rtti) = CAST cl_abap_tabledescr( cl_abap_typedescr=>describe_by_data( table ) )->get_table_line_type( ).
     m_line_type = line_rtti->type_kind.
     IF m_line_type = cl_abap_typedescr=>typekind_xstring.
@@ -172,7 +171,7 @@ CLASS zcl_io_itab_x_writer IMPLEMENTATION.
 
     FIELD-SYMBOLS <table> TYPE STANDARD TABLE.
 
-    ASSIGN m_ref_table->* TO <table>.
+    ASSIGN m_table->* TO <table>.
     ASSERT sy-subrc = 0.
     table = <table>.
     length_of_last_line = m_ref_offset->*.
@@ -185,7 +184,7 @@ CLASS zcl_io_itab_x_writer IMPLEMENTATION.
 
     FIELD-SYMBOLS <table> TYPE STANDARD TABLE.
 
-    ASSIGN m_ref_table->* TO <table>.
+    ASSIGN m_table->* TO <table>.
     ASSERT sy-subrc = 0.
     result = <table>.
     length_of_last_line = m_ref_offset->*.
@@ -196,7 +195,7 @@ CLASS zcl_io_itab_x_writer IMPLEMENTATION.
 
   METHOD zif_io_memory_writer~get_result_type.
 
-    result_type ?= cl_abap_typedescr=>describe_by_data_ref( m_ref_table ).
+    result_type ?= cl_abap_tabledescr=>describe_by_data_ref( m_table ).
 
   ENDMETHOD.
 

@@ -1,4 +1,4 @@
-"! <p class="shorttext synchronized" lang="en"></p>
+"! <p class="shorttext synchronized" lang="en">Stream state error</p>
 CLASS zcx_io_stream_state_error DEFINITION
   PUBLIC
   INHERITING FROM zcx_io_stream_error

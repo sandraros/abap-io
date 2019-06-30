@@ -1,4 +1,4 @@
-"! <p class="shorttext synchronized" lang="en"></p>
+"! <p class="shorttext synchronized" lang="en">Invalid parameter</p>
 "!
 CLASS zcx_io_parameter_invalid DEFINITION
   PUBLIC

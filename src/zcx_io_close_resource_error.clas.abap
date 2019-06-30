@@ -1,4 +1,4 @@
-"! <p class="shorttext synchronized" lang="en"></p>
+"! <p class="shorttext synchronized" lang="en">Error during close</p>
 "!
 CLASS zcx_io_close_resource_error DEFINITION
   PUBLIC

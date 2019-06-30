@@ -3,20 +3,27 @@
  <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
   <asx:values>
    <VSEOCLASS>
-    <CLSNAME>ZCL_IO_C_READER</CLSNAME>
+    <CLSNAME>ZCL_IO_DB_C_WRITER</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>Abstract character reader</DESCRIPT>
+    <DESCRIPT>Database column character string writer</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>
     <UNICODE>X</UNICODE>
+    <RSTAT>S</RSTAT>
    </VSEOCLASS>
    <DESCRIPTIONS>
     <SEOCOMPOTX>
-     <CLSNAME>ZCL_IO_C_READER</CLSNAME>
-     <CMPNAME>CONSTRUCTOR</CMPNAME>
+     <CLSNAME>ZCL_IO_DB_C_WRITER</CLSNAME>
+     <CMPNAME>MAXLENGTH</CMPNAME>
      <LANGU>E</LANGU>
-     <DESCRIPT>CONSTRUCTOR</DESCRIPT>
+     <DESCRIPT>Limited Length CLOB</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZCL_IO_DB_C_WRITER</CLSNAME>
+     <CMPNAME>WRITTEN_LENGTH</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Length of Characters Written</DESCRIPT>
     </SEOCOMPOTX>
    </DESCRIPTIONS>
   </asx:values>

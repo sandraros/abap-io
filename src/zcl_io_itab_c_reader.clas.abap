@@ -7,7 +7,6 @@ CLASS zcl_io_itab_c_reader DEFINITION
   GLOBAL FRIENDS zcl_io_c_reader .
 
   PUBLIC SECTION.
-    TYPE-POOLS abap .
 
     INTERFACES zif_io_itab_reader .
 
@@ -34,24 +33,25 @@ CLASS zcl_io_itab_c_reader DEFINITION
   PROTECTED SECTION.
   PRIVATE SECTION.
 
-    DATA: m_itab                TYPE REF TO data,
-          "! Length of stream (-1 = whole ITAB)
-          m_length              TYPE i,
-          "! Current line of stream (position)
-          m_line_index          TYPE i VALUE 1,
-          "! Offset in current line of stream (position)
-          m_position            TYPE i VALUE 0,
-          "! Offset in stream (position)
-          m_global_position     TYPE i VALUE 0,
-          m_line_index_mark     TYPE i VALUE 0,
-          m_pos_mark            TYPE i VALUE -1,
-          m_global_pos_mark     TYPE i VALUE -1,
-          m_line_type           TYPE REF TO cl_abap_datadescr,
-          m_data_available      TYPE abap_bool VALUE abap_true,
-          m_data_available_mark TYPE abap_bool,
-          m_line_type_is_string TYPE abap_bool,
-          "! If internal table has lines of type C, length of lines (0 for lines of type String)
-          m_line_length         TYPE i.
+    DATA m_itab TYPE REF TO data.
+    "! Current line of stream (position)
+    DATA m_line_index TYPE i VALUE 1.
+    "! Offset in current line of stream (position)
+    DATA m_position TYPE i VALUE 0.
+    DATA m_line_index_mark TYPE i VALUE 0.
+    DATA m_pos_mark TYPE i VALUE -1.
+    DATA m_line_type TYPE REF TO cl_abap_datadescr.
+    DATA m_data_available TYPE abap_bool VALUE abap_true.
+    DATA m_line_type_is_string TYPE abap_bool.
+    "! If internal table has lines of type C, length of lines (0 for lines of type String)
+    DATA m_line_length TYPE i.
+    DATA:
+      "! Offset in stream (position)
+      m_global_position     TYPE i VALUE 0,
+      m_global_pos_mark     TYPE i VALUE -1,
+      m_data_available_mark TYPE abap_bool,
+      "! Length of stream (-1 = whole ITAB)
+      m_length              TYPE i.
 
     METHODS data_available_internal
       RETURNING
@@ -76,10 +76,10 @@ CLASS zcl_io_itab_c_reader IMPLEMENTATION.
   METHOD constructor.
 
     FIELD-SYMBOLS <input> TYPE STANDARD TABLE.
-    DATA: itab_desc TYPE REF TO cl_abap_tabledescr,
-          l_name    TYPE string.
+    DATA itab_desc TYPE REF TO cl_abap_tabledescr.
 
     super->constructor( ).
+
     m_itab = REF #( itab ).
     m_length = nmax( val1 = length val2 = -1 ).
 
@@ -88,12 +88,11 @@ CLASS zcl_io_itab_c_reader IMPLEMENTATION.
     m_line_type = itab_desc->get_table_line_type( ).
     IF m_line_type->type_kind <> cl_abap_typedescr=>typekind_char AND
        m_line_type->type_kind <> cl_abap_typedescr=>typekind_string.
-      l_name = m_line_type->get_relative_name( ).
       RAISE EXCEPTION TYPE zcx_io_parameter_invalid_type
         EXPORTING
           textid    = zcx_io_parameter_invalid_type=>zcx_io_parameter_invalid_type
           parameter = `ITAB`
-          type      = l_name.
+          type      = m_line_type->get_relative_name( ).
     ENDIF.
 
     IF m_line_type->type_kind = cl_abap_typedescr=>typekind_string.
@@ -101,9 +100,7 @@ CLASS zcl_io_itab_c_reader IMPLEMENTATION.
     ELSE.
       m_line_length = m_line_type->length / cl_abap_char_utilities=>charsize.
     ENDIF.
-*    CREATE DATA m_itab LIKE itab.
-*    ASSIGN m_itab->* TO <input> CASTING LIKE itab.
-*    <input> = itab.
+
     find_first( ).
 
   ENDMETHOD.
@@ -230,10 +227,10 @@ CLASS zcl_io_itab_c_reader IMPLEMENTATION.
     ENDIF.
     m_line_index = 1.
     m_position = 0.
-    m_global_position = 0.
+    find_first( ).
     m_line_index_mark = 0.
     m_pos_mark = -1.
-    find_first( ).
+    m_global_position = 0.
   ENDMETHOD.
 
   METHOD zif_io_reader~reset_to_mark.

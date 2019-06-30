@@ -2,12 +2,28 @@ CLASS zcl_io_test_sap_classes DEFINITION
   PUBLIC
   ABSTRACT
   FOR TESTING
-DURATION SHORT
-RISK LEVEL HARMLESS
+  DURATION SHORT
+  RISK LEVEL HARMLESS
   CREATE PUBLIC .
 
   PUBLIC SECTION.
 
+    "! <p class="shorttext synchronized" lang="en"></p>
+    "!
+    "! @parameter reader | <p class="shorttext synchronized" lang="en"></p>
+    "! @parameter expect_read_auto_close | Possible values:<ul><li>'X': if the last character is read, the
+    "!          stream is automatically closed</li></ul> <p class="shorttext synchronized" lang="en"></p>
+    "! @parameter expect_exc_reset_if_no_mark | Possible values:<ul><li>'X': RESET_TO_MARK should do an
+    "!          exception if SET_MARK has not been called (or called but RESET or
+    "!          RESET_TO_MARK previously called)</li></ul> <p class="shorttext synchronized" lang="en"></p>
+    "! @parameter expect_avail_last_char | Possible values:<ul><li>'X': DATA_AVAILABLE should return ' ' after
+    "!          the last character has been read</li></ul> <p class="shorttext synchronized" lang="en"></p>
+    "! @parameter expect_exc_read_beyond_end | Not applicable if the stream is
+    "!          automatically closed<br/>Possible values:<ul><li>X': if the last character was read, and one more character is
+    "!          skipped or read, an exception is raised</li></ul>
+    "!          <p class="shorttext synchronized" lang="en"></p>
+    "! @raising cx_static_check | <p class="shorttext synchronized" lang="en"></p>
+    "! @raising cx_dynamic_check | <p class="shorttext synchronized" lang="en"></p>
     METHODS test_c_reader
       IMPORTING
         reader                      TYPE REF TO if_abap_c_reader
@@ -91,9 +107,9 @@ CLASS zcl_io_test_sap_classes IMPLEMENTATION.
         CATCH cx_stream_position_error INTO DATA(lx_no_mark).
       ENDTRY.
       IF expect_exc_reset_if_no_mark = abap_true.
-        cl_abap_unit_assert=>assert_bound( msg = 'reset to non-existing mark should do an exception' act = lx_no_mark ).
+        cl_abap_unit_assert=>assert_bound( msg = 'RESET_TO_MARK to non-existing mark should do an exception' act = lx_no_mark ).
       ELSE.
-        cl_abap_unit_assert=>assert_not_bound( msg = 'reset to non-existing mark should NOT do an exception' act = lx_no_mark ).
+        cl_abap_unit_assert=>assert_not_bound( msg = 'RESET_TO_MARK to non-existing mark should NOT do an exception' act = lx_no_mark ).
       ENDIF.
 
     ELSE.
@@ -129,6 +145,12 @@ CLASS zcl_io_test_sap_classes IMPLEMENTATION.
       cl_abap_unit_assert=>assert_equals( act = reader->data_available( ) exp = abap_true ).
     ELSE.
       cl_abap_unit_assert=>assert_equals( act = reader->data_available( ) exp = abap_false ).
+    ENDIF.
+
+    IF expect_read_auto_close = abap_true.
+      cl_abap_unit_assert=>assert_equals( act = reader->is_closed( ) exp = abap_true ).
+    ELSE.
+      cl_abap_unit_assert=>assert_equals( act = reader->is_closed( ) exp = abap_false ).
     ENDIF.
 
     IF abap_true = reader->is_mark_supported( ).

@@ -1,40 +1,41 @@
-interface ZIF_IO_C_READER
-  public .
+"! <p class="shorttext synchronized" lang="en">Character Reader</p>
+"!
+INTERFACE zif_io_c_reader
+  PUBLIC .
 
 
-  interfaces ZIF_IO_CLOSE_RESOURCE .
-  interfaces ZIF_IO_READER .
+  INTERFACES zif_io_reader .
 
-  aliases CLOSE
-    for ZIF_IO_READER~CLOSE .
-  aliases DATA_AVAILABLE
-    for ZIF_IO_READER~DATA_AVAILABLE .
-  aliases DELETE_MARK
-    for ZIF_IO_READER~DELETE_MARK .
-  aliases IS_CLOSED
-    for ZIF_IO_READER~IS_CLOSED .
-  aliases IS_MARK_SUPPORTED
-    for ZIF_IO_READER~IS_MARK_SUPPORTED .
-  aliases IS_RESET_SUPPORTED
-    for ZIF_IO_READER~IS_RESET_SUPPORTED .
-  aliases IS_X_READER
-    for ZIF_IO_READER~IS_X_READER .
-  aliases RESET
-    for ZIF_IO_READER~RESET .
-  aliases RESET_TO_MARK
-    for ZIF_IO_READER~RESET_TO_MARK .
-  aliases SET_MARK
-    for ZIF_IO_READER~SET_MARK .
-  aliases SKIP
-    for ZIF_IO_READER~SKIP .
+  ALIASES close
+    FOR zif_io_close_resource~close .
+  ALIASES data_available
+    FOR zif_io_reader~data_available .
+  ALIASES delete_mark
+    FOR zif_io_reader~delete_mark .
+  ALIASES is_closed
+    FOR zif_io_close_resource~is_closed .
+  ALIASES is_mark_supported
+    FOR zif_io_reader~is_mark_supported .
+  ALIASES is_reset_supported
+    FOR zif_io_reader~is_reset_supported .
+  ALIASES is_x_reader
+    FOR zif_io_reader~is_x_reader .
+  ALIASES reset
+    FOR zif_io_reader~reset .
+  ALIASES reset_to_mark
+    FOR zif_io_reader~reset_to_mark .
+  ALIASES set_mark
+    FOR zif_io_reader~set_mark .
+  ALIASES skip
+    FOR zif_io_reader~skip .
 
-  methods READ
-    importing
-      !LENGTH type NUMERIC
-    returning
-      value(RESULT) type STRING
-    raising
-      ZCX_IO_PARAMETER_INVALID_RANGE
-      ZCX_IO_RESOURCE_ALREADY_CLOSED
-      ZCX_IO_STREAM_ERROR .
-endinterface.
+  METHODS read
+    IMPORTING
+      !length       TYPE abap_msize
+    RETURNING
+      VALUE(result) TYPE string
+    RAISING
+      zcx_io_resource_already_closed
+      zcx_io_stream_error
+      zcx_io_parameter_invalid_range .
+ENDINTERFACE.

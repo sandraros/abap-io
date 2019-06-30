@@ -129,6 +129,7 @@ CLASS zcl_io_test IMPLEMENTATION.
     reader->skip( 1 ).
     snippet = reader->read( 2 ).
     cl_abap_unit_assert=>assert_equals( act = snippet exp = sy-abcde+5(2) ).
+    " (here the  position is after the 7th character)
 
     " skip <= 0 or read <= 0 -> exception
     DO 4 TIMES.
@@ -190,13 +191,13 @@ CLASS zcl_io_test IMPLEMENTATION.
       snippet = reader->read( 2 ).
       cl_abap_unit_assert=>assert_equals( act = snippet exp = sy-abcde+0(2) ).
 
-      reader->skip( 8 ).
+      reader->skip( 7 ).
     ENDIF.
 
     " here, cursor should be before 10th character
 
     " END OF STREAM: DATA_AVAILABLE, READ, CLOSE
-    reader->skip( 15 ).
+    reader->skip( 16 ).
     cl_abap_unit_assert=>assert_equals( act = reader->data_available( ) exp = abap_true ).
     IF abap_true = reader->is_mark_supported( ).
       reader->set_mark( ).

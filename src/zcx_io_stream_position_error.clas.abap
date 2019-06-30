@@ -1,4 +1,4 @@
-"! <p class="shorttext synchronized" lang="en"></p>
+"! <p class="shorttext synchronized" lang="en">Stream position error</p>
 CLASS zcx_io_stream_position_error DEFINITION
   PUBLIC
   INHERITING FROM zcx_io_stream_error
@@ -16,5 +16,5 @@ ENDCLASS.
 
 
 
-CLASS zcx_io_stream_position_error IMPLEMENTATION.
+CLASS ZCX_IO_STREAM_POSITION_ERROR IMPLEMENTATION.
 ENDCLASS.

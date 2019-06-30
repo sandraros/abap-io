@@ -5,12 +5,16 @@ CLASS zcl_io_c_reader DEFINITION
   CREATE PUBLIC .
 
   PUBLIC SECTION.
-    TYPE-POOLS abap .
 
     INTERFACES zif_io_close_resource
       ALL METHODS FINAL .
-    INTERFACES zif_io_reader .
-    INTERFACES zif_io_c_reader .
+    INTERFACES zif_io_reader
+      FINAL METHODS data_available
+      is_x_reader
+      read
+      skip .
+    INTERFACES zif_io_c_reader
+      FINAL METHODS read .
 
     ALIASES close
       FOR zif_io_close_resource~close .
@@ -23,13 +27,13 @@ CLASS zcl_io_c_reader DEFINITION
     ALIASES is_mark_supported
       FOR zif_io_c_reader~is_mark_supported .
     ALIASES is_reset_supported
-      FOR zif_io_reader~is_reset_supported .
+      FOR zif_io_c_reader~is_reset_supported .
     ALIASES is_x_reader
       FOR zif_io_c_reader~is_x_reader .
     ALIASES read
       FOR zif_io_c_reader~read .
     ALIASES reset
-      FOR zif_io_reader~reset .
+      FOR zif_io_c_reader~reset .
     ALIASES reset_to_mark
       FOR zif_io_c_reader~reset_to_mark .
     ALIASES set_mark
@@ -38,11 +42,13 @@ CLASS zcl_io_c_reader DEFINITION
       FOR zif_io_c_reader~skip .
 
     METHODS constructor .
+
   PROTECTED SECTION.
 
   PRIVATE SECTION.
 
-    DATA closed TYPE abap_bool .
+    DATA closed TYPE abap_bool VALUE abap_false.          "#EC NOTEXT .
+
 ENDCLASS.
 
 
@@ -55,11 +61,24 @@ CLASS zcl_io_c_reader IMPLEMENTATION.
 
 
   METHOD zif_io_close_resource~close.
-    closed = abap_true.
+    TRY.
+        CALL METHOD me->('CLOSE_INTERNAL').
+      CATCH cx_sy_dyn_call_illegal_method.
+        " not implemented by the resource
+        closed = abap_true.
+    ENDTRY.
   ENDMETHOD.
 
 
   METHOD zif_io_close_resource~is_closed.
+    TRY.
+        CALL METHOD me->('IS_CLOSED_INTERNAL')
+          RECEIVING
+            closed = closed.
+      CATCH cx_sy_dyn_call_illegal_method.
+        " not implemented by the resource
+        closed = me->closed.
+    ENDTRY.
     closed = me->closed.
   ENDMETHOD.
 
@@ -92,7 +111,7 @@ CLASS zcl_io_c_reader IMPLEMENTATION.
 
 
   METHOD zif_io_reader~delete_mark.
-    IF closed = abap_true.
+    IF closed IS NOT INITIAL.
       RAISE EXCEPTION TYPE zcx_io_resource_already_closed.
     ENDIF.
   ENDMETHOD.
@@ -114,16 +133,7 @@ CLASS zcl_io_c_reader IMPLEMENTATION.
 
 
   METHOD zif_io_reader~read.
-    IF closed = abap_true.
-      RAISE EXCEPTION TYPE zcx_io_resource_already_closed.
-    ENDIF.
-    CALL METHOD me->('READ_INTERNAL')
-      EXPORTING
-        length    = length
-      RECEIVING
-        read_data = read_data.
-*    zcl_io_stream_utilities=>check_data_type_is_string( read_data ).
-*    read_data = read( length ).
+    read_data = read( length ).
   ENDMETHOD.
 
 
@@ -143,7 +153,7 @@ CLASS zcl_io_c_reader IMPLEMENTATION.
     ENDIF.
     RAISE EXCEPTION TYPE zcx_io_stream_position_error
       EXPORTING
-        textid = zcx_io_stream_position_error=>zcx_io_reset_not_supported.
+        textid = zcx_io_stream_position_error=>zcx_io_mark_not_supported.
   ENDMETHOD.
 
 
@@ -153,8 +163,9 @@ CLASS zcl_io_c_reader IMPLEMENTATION.
     ENDIF.
     RAISE EXCEPTION TYPE zcx_io_stream_position_error
       EXPORTING
-        textid = zcx_io_stream_position_error=>zcx_io_reset_not_supported.
+        textid = zcx_io_stream_position_error=>zcx_io_mark_not_supported.
   ENDMETHOD.
+
 
   METHOD zif_io_reader~skip.
     IF closed = abap_true.
@@ -162,5 +173,4 @@ CLASS zcl_io_c_reader IMPLEMENTATION.
     ENDIF.
     read( length ).
   ENDMETHOD.
-
 ENDCLASS.
