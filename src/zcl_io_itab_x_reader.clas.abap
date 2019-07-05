@@ -227,10 +227,10 @@ CLASS zcl_io_itab_x_reader IMPLEMENTATION.
     ENDIF.
     m_line_index = 1.
     m_position = 0.
-    m_global_position = 0.
+    find_first( ).
     m_line_index_mark = 0.
     m_pos_mark = -1.
-    find_first( ).
+    m_global_position = 0.
   ENDMETHOD.
 
   METHOD zif_io_reader~reset_to_mark.

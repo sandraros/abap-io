@@ -28,6 +28,8 @@ INTERFACE zif_io_c_reader
     FOR zif_io_reader~set_mark .
   ALIASES skip
     FOR zif_io_reader~skip .
+  ALIASES is_auto_close_performed
+    FOR zif_io_reader~is_auto_close_performed .
 
   METHODS read
     IMPORTING

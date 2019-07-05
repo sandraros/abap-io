@@ -19,6 +19,8 @@ CLASS zcl_io_db_c_reader DEFINITION
       IMPORTING
         std_reader TYPE REF TO cl_abap_db_c_reader.
 
+    METHODS: zif_io_reader~is_auto_close_performed REDEFINITION.
+
   PROTECTED SECTION.
 *"* protected components of class CL_ABAP_DB_C_READER
 *"* do not include other source files here!!!
@@ -26,6 +28,9 @@ CLASS zcl_io_db_c_reader DEFINITION
 *"* private components of class CL_ABAP_DB_C_READER
 *"* do not include other source files here!!!
 
+    METHODS is_close_managed_internally                     "#EC WARNOK
+      RETURNING
+        VALUE(result) TYPE abap_bool.
     METHODS close_internal                                  "#EC WARNOK
       RAISING
         cx_lob_sql_error .
@@ -43,7 +48,8 @@ CLASS zcl_io_db_c_reader DEFINITION
       RETURNING
         VALUE(closed) TYPE abap_bool .
 
-    DATA: std_reader TYPE REF TO cl_abap_db_c_reader.
+    DATA: std_reader        TYPE REF TO cl_abap_db_c_reader,
+          closed_internally TYPE abap_bool.
 ENDCLASS.
 
 
@@ -54,16 +60,25 @@ CLASS zcl_io_db_c_reader IMPLEMENTATION.
   METHOD constructor.
     super->constructor( ).
     me->std_reader = std_reader.
+    close_managed_internally = abap_true.
   ENDMETHOD.
 
+
   METHOD close_internal.
+    closed_internally = abap_true.
     std_reader->close( ).
-*      CATCH cx_close_resource_error.    " .
   ENDMETHOD.
 
 
   METHOD data_available_internal.
-    available = std_reader->data_available( ).
+    IF closed_internally = abap_true.
+      " will produce an error
+      std_reader->data_available( ).
+    ELSEIF is_closed( ) = abap_true.
+      available = abap_false.
+    ELSE.
+      available = std_reader->data_available( ).
+    ENDIF.
   ENDMETHOD.
 
 
@@ -73,13 +88,14 @@ CLASS zcl_io_db_c_reader IMPLEMENTATION.
 
 
   METHOD read_internal.
-
-*    TRY.
-    result = std_reader->read( length ).
-*    CATCH cx_root.
-*    raise exception type cx_lob_sql_error.
-*    endtry.
-*    closed = std_reader->is_closed( ).
+    IF closed_internally = abap_true.
+      " will produce an error
+      std_reader->read( length ).
+    ELSEIF is_closed( ) = abap_true.
+      result = ``.
+    ELSE.
+      result = std_reader->read( length ).
+    ENDIF.
   ENDMETHOD.
 
 
@@ -87,9 +103,12 @@ CLASS zcl_io_db_c_reader IMPLEMENTATION.
     hdl = std_reader->get_statement_handle( ).
   ENDMETHOD.
 
+
   METHOD if_abap_close_resource~close.
+    closed_internally = abap_true.
     std_reader->close( ).
   ENDMETHOD.
+
 
   METHOD if_abap_reader~data_available.
     available = std_reader->data_available( ).
@@ -133,6 +152,14 @@ CLASS zcl_io_db_c_reader IMPLEMENTATION.
 
   METHOD if_abap_reader~skip.
     std_reader->skip( length ).
+  ENDMETHOD.
+
+  METHOD zif_io_reader~is_auto_close_performed.
+    result = abap_true.
+  ENDMETHOD.
+
+  METHOD is_close_managed_internally.
+    result = abap_true.
   ENDMETHOD.
 
 ENDCLASS.

@@ -242,7 +242,7 @@ CLASS zcl_io_itab_c_reader IMPLEMENTATION.
     ENDIF.
     m_line_index = m_line_index_mark.
     m_position = m_pos_mark.
-    m_global_position = m_pos_mark.
+    m_global_position = m_global_pos_mark.
     m_data_available = m_data_available_mark.
   ENDMETHOD.
 

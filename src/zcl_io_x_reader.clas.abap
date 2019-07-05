@@ -152,4 +152,9 @@ CLASS zcl_io_x_reader IMPLEMENTATION.
       RECEIVING
         result = result.
   ENDMETHOD.
+
+  METHOD zif_io_reader~is_auto_close_performed.
+    result = abap_false.
+  ENDMETHOD.
+
 ENDCLASS.

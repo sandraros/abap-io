@@ -211,14 +211,20 @@ CLASS zcl_io_test IMPLEMENTATION.
     IF abap_true = reader->is_mark_supported( ).
       reader->reset_to_mark( ).
       cl_abap_unit_assert=>assert_equals( act = reader->data_available( ) exp = abap_true ).
+      reader->skip( 1 ).
     ENDIF.
 
     " beyond last character
     TRY.
         snippet = reader->read( 1 ).
-      CATCH zcx_io_stream_error INTO DATA(lx_end).
+      CATCH zcx_io_resource_already_closed INTO DATA(lx_end).
     ENDTRY.
-    cl_abap_unit_assert=>assert_not_bound( act = lx_end ).
+    IF reader->is_auto_close_performed( ) = abap_true.
+      cl_abap_unit_assert=>assert_bound( act = lx_end ).
+    ELSE.
+      cl_abap_unit_assert=>assert_not_bound( act = lx_end ).
+      cl_abap_unit_assert=>assert_initial( act = snippet ).
+    ENDIF.
 
     " close
     reader->close( ).
@@ -228,19 +234,23 @@ CLASS zcl_io_test IMPLEMENTATION.
 
     " exceptions for all operations on a closed stream
     DO 7 TIMES.
-      TRY.
-          CASE sy-index.
-            WHEN 1. reader->read( 1 ).
-            WHEN 2. reader->delete_mark( ).
-            WHEN 3. reader->reset( ).
-            WHEN 4. reader->reset_to_mark( ).
-            WHEN 5. reader->skip( 1 ).
-            WHEN 6. reader->data_available( ).
-            WHEN 7. reader->set_mark( ).
-          ENDCASE.
-        CATCH zcx_io_resource_already_closed INTO DATA(lx_closed).
-      ENDTRY.
-      cl_abap_unit_assert=>assert_bound( msg = 'expecting exception on closed stream' act = lx_closed ).
+      IF ( sy-index < 5 )
+          OR ( sy-index = 5 AND abap_true = reader->is_reset_supported( ) )
+          OR ( sy-index > 5 AND abap_true = reader->is_mark_supported( ) ).
+        TRY.
+            CASE sy-index.
+              WHEN 1. reader->read( 1 ).
+              WHEN 2. reader->delete_mark( ).
+              WHEN 3. reader->skip( 1 ).
+              WHEN 4. reader->data_available( ).
+              WHEN 5. reader->reset( ).
+              WHEN 6. reader->reset_to_mark( ).
+              WHEN 7. reader->set_mark( ).
+            ENDCASE.
+          CATCH zcx_io_resource_already_closed INTO DATA(lx_closed).
+        ENDTRY.
+        cl_abap_unit_assert=>assert_bound( msg = 'expecting exception on closed stream' act = lx_closed ).
+      ENDIF.
     ENDDO.
 
   ENDMETHOD.
