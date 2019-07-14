@@ -1,4 +1,5 @@
 *"* use this source file for your ABAP unit test classes
+
 CLASS ltc_main DEFINITION
       FOR TESTING
       DURATION SHORT

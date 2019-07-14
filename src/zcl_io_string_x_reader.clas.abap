@@ -14,15 +14,24 @@ CLASS zcl_io_string_x_reader DEFINITION
 
     METHODS constructor
       IMPORTING
-*        !str  TYPE string
-        !xstr TYPE xsequence OPTIONAL .
+        !xstr TYPE xstring OPTIONAL .
+
+    METHODS zif_io_reader~is_mark_supported
+        REDEFINITION .
+    METHODS zif_io_reader~is_reset_supported
+        REDEFINITION .
+    METHODS zif_io_reader~reset
+        REDEFINITION .
+    METHODS zif_io_reader~reset_to_mark
+        REDEFINITION .
+    METHODS zif_io_reader~set_mark
+        REDEFINITION .
+
   PROTECTED SECTION.
   PRIVATE SECTION.
 
-    DATA aiv_stream_bytes TYPE i .
-    DATA aiv_offset TYPE i .
     DATA m_str TYPE xstring .
-    DATA m_ref_xstr TYPE REF TO data .
+    TYPE-POOLS abap.
     DATA m_offset TYPE abap_msize VALUE 0 ##NO_TEXT.
     DATA m_mark TYPE abap_msize VALUE -1 ##NO_TEXT.
 
@@ -45,44 +54,79 @@ CLASS zcl_io_string_x_reader IMPLEMENTATION.
 
     CALL METHOD super->constructor.
     m_str = xstr.
-    aiv_stream_bytes = xstrlen( m_str ).
-    aiv_offset = 0.
-    aov_data_available = abap_true.
-    IF aiv_stream_bytes = 0.
-      aov_data_available = abap_false.
-    ENDIF.
-    IF xstr IS SUPPLIED. "hors standard
-      GET REFERENCE OF xstr INTO m_ref_xstr.
-    ENDIF.
 
   ENDMETHOD.
 
 
   METHOD data_available_internal.
 
-    available = aov_data_available.
+    IF m_offset < xstrlen( m_str ).
+      available = abap_true.
+    ENDIF.
 
   ENDMETHOD.
 
 
   METHOD read_internal.
 
-    DATA lv_bytes TYPE i.
-    FIELD-SYMBOLS <lv_xsequence> TYPE xsequence.
-    IF data_available( ) = abap_false.
-      lv_bytes = 0.
-      CLEAR result.
-      "RAISE EXCEPTION TYPE zcx_io_end_of_istream.
+    IF length + m_offset > xstrlen( m_str ).
+      result = m_str+m_offset(*).
     ELSE.
-      lv_bytes = aiv_stream_bytes - aiv_offset.
-      IF length >= lv_bytes.
-        aov_data_available = abap_false.
-      ELSE.
-        lv_bytes = length.
-      ENDIF.
-      result = m_str+aiv_offset(lv_bytes).
-      ADD lv_bytes TO aiv_offset.
+      result = m_str+m_offset(length).
     ENDIF.
+    m_offset = m_offset + length.
 
   ENDMETHOD.
+
+
+  METHOD zif_io_reader~is_mark_supported.
+
+    res = abap_true.
+
+  ENDMETHOD.
+
+
+  METHOD zif_io_reader~is_reset_supported.
+
+    result = abap_true.
+
+  ENDMETHOD.
+
+
+  METHOD zif_io_reader~reset.
+
+    IF is_closed( ) = abap_true.
+      RAISE EXCEPTION TYPE zcx_io_resource_already_closed.
+    ENDIF.
+    m_offset = 0.
+    m_mark = -1.
+
+  ENDMETHOD.
+
+
+  METHOD zif_io_reader~reset_to_mark.
+
+    IF is_closed( ) = abap_true.
+      RAISE EXCEPTION TYPE zcx_io_resource_already_closed.
+    ENDIF.
+    IF m_mark = -1.
+      RAISE EXCEPTION TYPE zcx_io_stream_position_error
+        EXPORTING
+          textid = zcx_io_stream_position_error=>zcx_io_mark_not_set.
+    ENDIF.
+    m_offset = m_mark.
+
+  ENDMETHOD.
+
+
+  METHOD zif_io_reader~set_mark.
+
+    IF is_closed( ) = abap_true.
+      RAISE EXCEPTION TYPE zcx_io_resource_already_closed.
+    ENDIF.
+    m_mark = m_offset.
+
+  ENDMETHOD.
+
+
 ENDCLASS.

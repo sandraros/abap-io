@@ -28,22 +28,22 @@ CLASS zcl_io_db_c_reader DEFINITION
 *"* private components of class CL_ABAP_DB_C_READER
 *"* do not include other source files here!!!
 
-    METHODS is_close_managed_internally                     "#EC WARNOK
-      RETURNING
-        VALUE(result) TYPE abap_bool.
     METHODS close_internal                                  "#EC WARNOK
       RAISING
         cx_lob_sql_error .
     METHODS data_available_internal                         "#EC WARNOK
       RETURNING
-        VALUE(available) TYPE abap_bool.
+        VALUE(available) TYPE abap_bool
+      RAISING
+        zcx_io_resource_already_closed.
     METHODS read_internal                                   "#EC WARNOK
       IMPORTING
         !length       TYPE abap_msize
       RETURNING
         VALUE(result) TYPE string
       RAISING
-        cx_lob_sql_error .
+        cx_lob_sql_error
+        zcx_io_resource_already_closed.
     METHODS is_closed_internal                              "#EC WARNOK
       RETURNING
         VALUE(closed) TYPE abap_bool .
@@ -72,8 +72,7 @@ CLASS zcl_io_db_c_reader IMPLEMENTATION.
 
   METHOD data_available_internal.
     IF closed_internally = abap_true.
-      " will produce an error
-      std_reader->data_available( ).
+      RAISE EXCEPTION TYPE zcx_io_resource_already_closed.
     ELSEIF is_closed( ) = abap_true.
       available = abap_false.
     ELSE.
@@ -155,10 +154,6 @@ CLASS zcl_io_db_c_reader IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_io_reader~is_auto_close_performed.
-    result = abap_true.
-  ENDMETHOD.
-
-  METHOD is_close_managed_internally.
     result = abap_true.
   ENDMETHOD.
 

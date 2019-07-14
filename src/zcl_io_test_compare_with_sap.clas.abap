@@ -195,6 +195,8 @@ CLASS zcl_io_test_compare_with_sap IMPLEMENTATION.
     SPLIT cus_lines_as_string AT cl_abap_char_utilities=>newline INTO TABLE sources-cus_lines.
     SPLIT std_lines_as_string AT cl_abap_char_utilities=>newline INTO TABLE sources-std_lines.
 
+    DELETE sources-std_lines WHERE table_line IS INITIAL OR table_line CO space.
+
   ENDMETHOD.
 
 

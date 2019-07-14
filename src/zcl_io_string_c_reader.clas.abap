@@ -8,7 +8,6 @@ CLASS zcl_io_string_c_reader DEFINITION
   GLOBAL FRIENDS zcl_io_c_reader .
 
   PUBLIC SECTION.
-    TYPE-POOLS abap .
 
     INTERFACES zif_io_string_reader .
 
@@ -26,21 +25,20 @@ CLASS zcl_io_string_c_reader DEFINITION
         REDEFINITION .
     METHODS zif_io_reader~set_mark
         REDEFINITION .
-    METHODS zif_io_reader~delete_mark
-        REDEFINITION .
   PROTECTED SECTION.
   PRIVATE SECTION.
 
     DATA m_str TYPE string .
-    DATA m_offset TYPE abap_msize VALUE 0 ##NO_TEXT.
-    DATA m_mark TYPE abap_msize VALUE -1 ##NO_TEXT.
+    TYPE-POOLS abap .
+    DATA m_offset TYPE abap_msize VALUE 0.               "#EC NO_TEXT .
+    DATA m_mark TYPE abap_msize VALUE -1.                "#EC NO_TEXT .
 
     METHODS data_available_internal
       RETURNING
         VALUE(available) TYPE abap_bool .
     METHODS read_internal
       IMPORTING
-        !length       TYPE numeric
+        !length       TYPE abap_msize
       RETURNING
         VALUE(result) TYPE string .
 ENDCLASS.
@@ -63,20 +61,6 @@ CLASS zcl_io_string_c_reader IMPLEMENTATION.
     IF m_offset < strlen( m_str ).
       available = abap_true.
     ENDIF.
-
-  ENDMETHOD.
-
-
-  METHOD read_internal.
-    DATA l_dummy TYPE i.
-
-    l_dummy = length + m_offset.
-    IF l_dummy > strlen( m_str ).
-      result = m_str+m_offset(*).
-    ELSE.
-      result = m_str+m_offset(length).
-    ENDIF.
-    m_offset = l_dummy.
 
   ENDMETHOD.
 
@@ -130,13 +114,17 @@ CLASS zcl_io_string_c_reader IMPLEMENTATION.
 
   ENDMETHOD.
 
-  METHOD zif_io_reader~delete_mark.
 
-    IF is_closed( ) = abap_true.
-      RAISE EXCEPTION TYPE zcx_io_resource_already_closed.
+  METHOD read_internal.
+
+    IF length + m_offset > strlen( m_str ).
+      result = m_str+m_offset(*).
+    ELSE.
+      result = m_str+m_offset(length).
     ENDIF.
-    m_mark = -1.
+    m_offset = m_offset + length.
 
   ENDMETHOD.
+
 
 ENDCLASS.
