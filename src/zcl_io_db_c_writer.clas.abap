@@ -4,7 +4,6 @@ CLASS zcl_io_db_c_writer DEFINITION
   INHERITING FROM zcl_io_c_writer
   FINAL
   CREATE PUBLIC
-
   GLOBAL FRIENDS zcl_io_c_writer.
 
   PUBLIC SECTION.

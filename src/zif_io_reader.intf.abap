@@ -120,7 +120,7 @@ INTERFACE zif_io_reader
   "! <p class="shorttext synchronized" lang="en">Stream may be automatically closed</p>
   "!
   "! @parameter result | <p class="shorttext synchronized" lang="en">'X' if automatically closed at end of stream</p>
-  METHODS is_auto_close_performed
+  METHODS is_auto_close_enabled
     RETURNING
       VALUE(result) TYPE abap_bool .
 

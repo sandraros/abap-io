@@ -30,7 +30,7 @@ INTERFACE zif_io_x_reader
   ALIASES skip
     FOR zif_io_reader~skip .
   ALIASES is_auto_close_performed
-    FOR zif_io_reader~is_auto_close_performed .
+    FOR zif_io_reader~is_auto_close_enabled .
 
   METHODS read
     IMPORTING

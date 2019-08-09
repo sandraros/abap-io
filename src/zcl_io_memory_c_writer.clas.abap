@@ -8,7 +8,9 @@ CLASS zcl_io_memory_c_writer DEFINITION
 
   PUBLIC SECTION.
 
-    INTERFACES zif_io_memory_writer .
+    INTERFACES zif_io_memory_writer
+      ABSTRACT METHODS get_result
+      get_result_type .
 
     ALIASES get_result
       FOR zif_io_memory_writer~get_result .
@@ -20,13 +22,5 @@ ENDCLASS.
 
 
 
-CLASS zcl_io_memory_c_writer IMPLEMENTATION.
-
-
-  METHOD zif_io_memory_writer~get_result.
-  ENDMETHOD.
-
-
-  METHOD zif_io_memory_writer~get_result_type.
-  ENDMETHOD.
+CLASS ZCL_IO_MEMORY_C_WRITER IMPLEMENTATION.
 ENDCLASS.

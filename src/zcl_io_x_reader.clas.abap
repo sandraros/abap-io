@@ -40,7 +40,7 @@ CLASS zcl_io_x_reader DEFINITION
     ALIASES skip
       FOR zif_io_reader~skip .
     ALIASES is_auto_close_performed
-      FOR zif_io_reader~is_auto_close_performed .
+      FOR zif_io_reader~is_auto_close_enabled .
     METHODS constructor .
 
   PROTECTED SECTION.
@@ -114,7 +114,7 @@ CLASS zcl_io_x_reader IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD zif_io_reader~is_auto_close_performed.
+  METHOD zif_io_reader~is_auto_close_enabled.
 
     result = abap_false.
 

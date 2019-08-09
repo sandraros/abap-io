@@ -52,7 +52,7 @@ CLASS zcl_io_string_x_reader IMPLEMENTATION.
 
   METHOD constructor.
 
-    CALL METHOD super->constructor.
+    super->constructor( ).
     m_str = xstr.
 
   ENDMETHOD.
@@ -63,18 +63,6 @@ CLASS zcl_io_string_x_reader IMPLEMENTATION.
     IF m_offset < xstrlen( m_str ).
       available = abap_true.
     ENDIF.
-
-  ENDMETHOD.
-
-
-  METHOD read_internal.
-
-    IF length + m_offset > xstrlen( m_str ).
-      result = m_str+m_offset(*).
-    ELSE.
-      result = m_str+m_offset(length).
-    ENDIF.
-    m_offset = m_offset + length.
 
   ENDMETHOD.
 
@@ -125,6 +113,18 @@ CLASS zcl_io_string_x_reader IMPLEMENTATION.
       RAISE EXCEPTION TYPE zcx_io_resource_already_closed.
     ENDIF.
     m_mark = m_offset.
+
+  ENDMETHOD.
+
+
+  METHOD read_internal.
+
+    IF length + m_offset > xstrlen( m_str ).
+      result = m_str+m_offset(*).
+    ELSE.
+      result = m_str+m_offset(length).
+    ENDIF.
+    m_offset = m_offset + length.
 
   ENDMETHOD.
 

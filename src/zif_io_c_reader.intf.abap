@@ -29,11 +29,11 @@ INTERFACE zif_io_c_reader
   ALIASES skip
     FOR zif_io_reader~skip .
   ALIASES is_auto_close_performed
-    FOR zif_io_reader~is_auto_close_performed .
+    FOR zif_io_reader~is_auto_close_enabled .
 
   METHODS read
     IMPORTING
-      !length       TYPE abap_msize
+      !length       TYPE numeric
     RETURNING
       VALUE(result) TYPE string
     RAISING

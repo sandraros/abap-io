@@ -41,6 +41,7 @@ CLASS zcl_io_itab_c_reader DEFINITION
     DATA m_line_index_mark TYPE i VALUE 0.
     DATA m_pos_mark TYPE i VALUE -1.
     DATA m_line_type TYPE REF TO cl_abap_datadescr.
+    TYPE-POOLS abap .
     DATA m_data_available TYPE abap_bool VALUE abap_true.
     DATA m_line_type_is_string TYPE abap_bool.
     "! If internal table has lines of type C, length of lines (0 for lines of type String)

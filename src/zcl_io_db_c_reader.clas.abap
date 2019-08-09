@@ -12,14 +12,16 @@ CLASS zcl_io_db_c_reader DEFINITION
 *"* public components of class CL_ABAP_DB_C_READER
 *"* do not include other source files here!!!
     INTERFACES if_abap_db_reader .
-    INTERFACES if_abap_db_lob_handle .
     INTERFACES if_abap_db_clob_handle .
+    INTERFACES if_abap_db_lob_handle .
+    ALIASES get_statement_handle
+      FOR if_abap_db_reader~get_statement_handle .
 
     METHODS constructor
       IMPORTING
         std_reader TYPE REF TO cl_abap_db_c_reader.
 
-    METHODS: zif_io_reader~is_auto_close_performed REDEFINITION.
+    METHODS: zif_io_reader~is_auto_close_enabled REDEFINITION.
 
   PROTECTED SECTION.
 *"* protected components of class CL_ABAP_DB_C_READER
@@ -153,7 +155,7 @@ CLASS zcl_io_db_c_reader IMPLEMENTATION.
     std_reader->skip( length ).
   ENDMETHOD.
 
-  METHOD zif_io_reader~is_auto_close_performed.
+  METHOD zif_io_reader~is_auto_close_enabled.
     result = abap_true.
   ENDMETHOD.
 

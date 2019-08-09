@@ -7,7 +7,6 @@ CLASS zcl_io_itab_x_reader DEFINITION
   GLOBAL FRIENDS zcl_io_x_reader .
 
   PUBLIC SECTION.
-    TYPE-POOLS abap .
 
     INTERFACES zif_io_itab_reader .
 
@@ -71,8 +70,7 @@ CLASS zcl_io_itab_x_reader IMPLEMENTATION.
   METHOD constructor.
 
     FIELD-SYMBOLS <input> TYPE STANDARD TABLE.
-    DATA: itab_desc TYPE REF TO cl_abap_tabledescr,
-          l_name    TYPE string.
+    DATA itab_desc TYPE REF TO cl_abap_tabledescr.
 
     super->constructor( ).
     m_itab = REF #( itab ).
@@ -83,12 +81,11 @@ CLASS zcl_io_itab_x_reader IMPLEMENTATION.
     m_line_type = itab_desc->get_table_line_type( ).
     IF m_line_type->type_kind <> cl_abap_typedescr=>typekind_hex AND
        m_line_type->type_kind <> cl_abap_typedescr=>typekind_xstring.
-      l_name = m_line_type->get_relative_name( ).
       RAISE EXCEPTION TYPE zcx_io_parameter_invalid_type
         EXPORTING
           textid    = zcx_io_parameter_invalid_type=>zcx_io_parameter_invalid_type
           parameter = `ITAB`
-          type      = l_name.
+          type      = m_line_type->get_relative_name( ).
     ENDIF.
 
     IF m_line_type->type_kind = cl_abap_typedescr=>typekind_xstring.
@@ -96,9 +93,6 @@ CLASS zcl_io_itab_x_reader IMPLEMENTATION.
     ELSE.
       m_line_length = m_line_type->length.
     ENDIF.
-*    CREATE DATA m_itab LIKE itab.
-*    ASSIGN m_itab->* TO <input> CASTING LIKE itab.
-*    <input> = itab.
     find_first( ).
 
   ENDMETHOD.

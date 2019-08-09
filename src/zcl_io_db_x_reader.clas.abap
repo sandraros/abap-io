@@ -23,7 +23,7 @@ CLASS zcl_io_db_x_reader DEFINITION
         !std_reader TYPE REF TO cl_abap_db_x_reader .
     METHODS destructor .
 
-    METHODS zif_io_reader~is_auto_close_performed
+    METHODS zif_io_reader~is_auto_close_enabled
         REDEFINITION .
   PROTECTED SECTION.
 *"* protected components of class CL_ABAP_DB_X_READER
@@ -173,7 +173,7 @@ CLASS zcl_io_db_x_reader IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD zif_io_reader~is_auto_close_performed.
+  METHOD zif_io_reader~is_auto_close_enabled.
     result = abap_true.
   ENDMETHOD.
 ENDCLASS.

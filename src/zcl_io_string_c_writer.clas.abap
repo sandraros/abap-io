@@ -12,9 +12,16 @@ CLASS zcl_io_string_c_writer DEFINITION
 
     INTERFACES zif_io_string_writer .
 
+    "! <p class="shorttext synchronized" lang="en"></p>
+    "!
+    "! @parameter str | <p class="shorttext synchronized" lang="en"></p>
     METHODS bind_result_area
       EXPORTING
         !str TYPE string .
+
+    "! <p class="shorttext synchronized" lang="en">GET_RESULT_STRING</p>
+    "!
+    "! @parameter str | <p class="shorttext synchronized" lang="en">STR</p>
     METHODS get_result_string
       RETURNING
         VALUE(str) TYPE string .
@@ -23,6 +30,7 @@ CLASS zcl_io_string_c_writer DEFINITION
         REDEFINITION .
     METHODS zif_io_memory_writer~get_result_type
         REDEFINITION .
+
   PROTECTED SECTION.
   PRIVATE SECTION.
 
